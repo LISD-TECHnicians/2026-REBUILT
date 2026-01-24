@@ -3,15 +3,12 @@ package frc.robot;
 public class Constants {
     public static class FieldConstants {
         public static double kHeightAprilTag = 0.0; 
+        //  m_deltaY = FieldConstants.kHeightAprilTag - ShooterConstants.kEffectiveShooterHeight;
     }
 
     public static class OperatorConstants {}
 
     public static class PathPlannerConstants {}    
-
-    public static class PhysicsConstants {
-        public static double kGravity = -9.81; // in m/s^2
-    }
 
     public static class RobotConstants {
 
@@ -44,25 +41,41 @@ public class Constants {
         public static class LimelightConstants {}
 
         public static class ShooterConstants {
-            public static final int kPitchMotorID = 0;
+            public static final int kHoodMotorID = 0;
             public static final int kShooterMotorID = 1;
-            public static final double kShooterWheelSpeedFire = .25;
-            public static final double kShooterWheelSpeedIdle = kShooterWheelSpeedFire / 2;
-            public static final double kEffectiveShooterHeight = .75; 
             public static final double kRadiusShooterWheel = 0.25; // get in meters
-            public static final double kPitchGearRatio = 1.0;
-            public static final double kPitchPlaneCorrection = 0.0; // geometry offset 
-            public static final double kPitchRestAngle = 45.0; // calculate from average use case.
-            public static final double kPitchCorrection = 0.0; // Tune via trial and error with physical bot.
+            public static final double kWheelSpeedFirePercent = .25; // establish a value via testing and refactor
+            public static final double kWheelSpeedFireRpm = kWheelSpeedFirePercent 
+                                                            * RobotConstants.kNeoMaxRpm; 
+            public static final double kWheelSpeedTangential = ( kWheelSpeedFireRpm * Math.PI * 2 
+                                                            * kRadiusShooterWheel) / 60.0;
+            public static final double kWheelSpeedIdlePercent = kWheelSpeedFirePercent / 2;
+            public static final double kAllowedShooterSpeedError = 0.05;
+            public static final double kShooterHeight = .75; 
+            public static final double kHoodGearRatio = 1.0;
+            public static final double kHoodDegreesSecond = 90;
+            public static final double kHoodDegreesSecondSquare = 180;
+            public static final double kHoodPositionVarience = 2.0;
+            public static final double kHoodPlaneCorrection = 0.0; // geometry offset 
+            public static final double kHoodRestAngle = 45.0; // calculate from average use case.
+            public static final double kHoodCorrection = 0.0; // Tune via trial and error with physical bot.
             public static final double kEffectiveKineticCoef = 1.0; 
-            public static final double kPitchProportion = 1.0; 
-            public static final double kPitchIntegration = 0.0;
-            public static final double kPitchDerivative = 0.0; 
+            public static final double kHoodProportion = 1.0; 
+            public static final double kHoodIntegration = 0.0;
+            public static final double kHoodDerivative = 0.0; 
             public static final double kShooterProportion = 1.0; 
             public static final double kShooterIntegration = 0.0;
             public static final double kShooterDerivative = 0.0; 
-            public static final double[] kPitchRangeDegrees= {0, 30};
+            public static final double[] kHoodRangeDegrees= {0, 30};
         }
+        
+
+    }
+
+        public static class PhysicsConstants {
+            public static double kGravity = -9.81; // in m/s^2
+            public static double kDeltaHeight = FieldConstants.kHeightAprilTag - 
+                                                RobotConstants.ShooterConstants.kShooterHeight;
     }
 
      
