@@ -79,6 +79,6 @@ public class IntakePositionCommand extends Command {
     @Override
     public boolean isFinished() {
         return m_intakeSubsystem.pivotInPosition();
-        // implement a backup timeout or something similar??
+        // test and consider backup plan 
     }
 }

@@ -13,13 +13,14 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import frc.robot.Constants.RobotConstants.CTREConstants;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
 
-public class IntakeSubsystem extends SubsystemBase{
+public class IntakeSubsystem extends SubsystemBase {
 
     public enum Position {
         DEPLOYED(0),
@@ -37,12 +38,13 @@ public class IntakeSubsystem extends SubsystemBase{
         }
     }
 
-    TalonFX m_intakeMotor;
-    TalonFX m_pivotMotor;    
-    TalonFXConfiguration m_intakeMotorConfig;
-    TalonFXConfiguration m_pivotMotorConfig;
-    VoltageOut m_intakeVoltageRequest = new VoltageOut(0);
-    DynamicMotionMagicVoltage m_pivotDynamicMotionMagicRequest 
+    private TalonFX m_intakeMotor;
+    private TalonFX m_pivotMotor;    
+    private VelocityVoltage m_intakeVelocityRequest 
+        = new VelocityVoltage(0);
+    private VoltageOut m_intakeVoltageRequest 
+        = new VoltageOut(0);
+    private DynamicMotionMagicVoltage m_pivotDynamicMotionMagicRequest 
             = new DynamicMotionMagicVoltage(
             Units.Rotations.of(0),  
             IntakeConstants.kPivotRunVelocity, 
@@ -55,7 +57,7 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public void configureIntakeMotor() {
-        m_intakeMotorConfig = new TalonFXConfiguration()
+        TalonFXConfiguration intakeMotorConfig = new TalonFXConfiguration()
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(IntakeConstants.kIntakeInvertedValue)
@@ -69,11 +71,11 @@ public class IntakeSubsystem extends SubsystemBase{
                     .withSupplyCurrentLimit(Units.Amps.of(70))
                     .withSupplyCurrentLimitEnable(true)
             );
-            m_intakeMotor.getConfigurator().apply(m_intakeMotorConfig);
+            m_intakeMotor.getConfigurator().apply(intakeMotorConfig);
     }
 
     public void configurePivotMotor() {
-        m_pivotMotorConfig = new TalonFXConfiguration()
+        TalonFXConfiguration pivotMotorConfig = new TalonFXConfiguration()
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(IntakeConstants.kPivotInvertedValue)
@@ -96,12 +98,12 @@ public class IntakeSubsystem extends SubsystemBase{
                     .withKP(IntakeConstants.kPivotSlot0KP)
                     .withKI(IntakeConstants.kPivotSlot0KI)
                     .withKD(IntakeConstants.kPivotSlot0KD)
-                    .withKV(CTREConstants.kBatterySupplyVolts 
-                    / (CTREConstants.kKrakenX60MaxRadsSecond.in(Units.RotationsPerSecond) *
-                    (IntakeConstants.kPivotMotorGearReduction)))
+                    .withKV(CTREConstants.kBatterySupplyVolts.in(Units.Volts)
+                    / (CTREConstants.kKrakenX60MaxRadsSecond.in(Units.RotationsPerSecond) 
+                    * (IntakeConstants.kPivotMotorGearReduction)))
                     .withKG(IntakeConstants.kPivotSlot0KG)
             );
-            m_pivotMotor.getConfigurator().apply(m_pivotMotorConfig);
+            m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
     }       
 
     public void configureMotors() {
@@ -113,19 +115,35 @@ public class IntakeSubsystem extends SubsystemBase{
         AngularVelocity requestVelocity, 
         AngularAcceleration requestAcceleration,
         double requestJerk) {
-        m_pivotDynamicMotionMagicRequest.Velocity = requestVelocity.in(Units.RotationsPerSecond);
-        m_pivotDynamicMotionMagicRequest.Acceleration = requestAcceleration.in(Units.RotationsPerSecondPerSecond);
-        m_pivotDynamicMotionMagicRequest.Jerk = requestJerk; // in rotations/s^3
+        m_pivotDynamicMotionMagicRequest.Velocity 
+            = requestVelocity.in(Units.RotationsPerSecond);
+        m_pivotDynamicMotionMagicRequest.Acceleration 
+            = requestAcceleration.in(Units.RotationsPerSecondPerSecond);
+        m_pivotDynamicMotionMagicRequest.Jerk = requestJerk; // rotations per second cubed
         m_pivotMotor.setControl(
             m_pivotDynamicMotionMagicRequest
             .withPosition(position.positionDegrees())
         );
     }
 
-    public void setIntakeMotorSpeed(double setSpeedPercent) {
+    public void setIntakeMotorSpeed(double setSpeed) {
         m_intakeMotor.setControl(
             m_intakeVoltageRequest
-                .withOutput(Units.Volts.of(setSpeedPercent * CTREConstants.kBatterySupplyVolts))
+                .withOutput(Units.Volts.of(
+                    setSpeed
+                    * CTREConstants.kBatterySupplyVolts.in(Units.Volts)
+                    )
+                )
+        );
+    }
+
+    public void setIntakeMotorSpeed(AngularVelocity setSpeed) {
+        m_intakeMotor.setControl(
+            m_intakeVelocityRequest
+                .withVelocity(Units.RadiansPerSecond.of(
+                    setSpeed.in(Units.RadiansPerSecond)
+                    )
+                )
         );
     }
 
@@ -135,13 +153,11 @@ public class IntakeSubsystem extends SubsystemBase{
         return currentPosition.isNear(targetPosition, IntakeConstants.kPivotDegreesTolerance);
     }
 
-    public void stopIntake()
-    {
+    public void stopIntake() {
         m_intakeMotor.set(0);
     }
 
-    public void stopPivot()
-    {
+    public void stopPivot() {
         m_pivotMotor.set(0);
     }
 
