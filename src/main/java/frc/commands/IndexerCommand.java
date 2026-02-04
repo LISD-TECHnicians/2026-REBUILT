@@ -1,16 +1,14 @@
 package frc.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.generated.TunerConstants.IndexerConstants;
+import frc.robot.Constants.RobotConstants.IndexerConstants;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class IndexerCommand extends Command{
     private IndexerSubsystem m_indexerSubsystem;
-    private final double setSpeed;
 
-    public IndexerCommand (IndexerSubsystem indexerSubsystem, double speed) {
+    public IndexerCommand (IndexerSubsystem indexerSubsystem) {
         m_indexerSubsystem = indexerSubsystem;
-        setSpeed = speed;
         addRequirements(m_indexerSubsystem);
     }
 
@@ -21,7 +19,7 @@ public class IndexerCommand extends Command{
 
     @Override
     public void execute() {
-       m_indexerSubsystem.setIndexerMotorSpeed(0.5);
+        m_indexerSubsystem.setIndexerMotorSpeed(IndexerConstants.kIndexerMotorSpeed);
     }
 
     @Override

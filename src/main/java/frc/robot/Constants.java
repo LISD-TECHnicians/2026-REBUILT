@@ -29,7 +29,7 @@ public class Constants {
         public class IndexerConstants {
             
             public static final int kIndexerMotorID = 9;
-            private static final boolean kIndexerMotorInverted = false;
+            public static final double kIndexerMotorSpeed = 0.5;
         }
     }
 }

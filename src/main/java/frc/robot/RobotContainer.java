@@ -21,6 +21,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IndexerSubsystem;
 
 public class RobotContainer {
+    private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem();
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -47,12 +48,12 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(m_driverController.getLeftY() * MaxSpeed) // Drive forward with positive Y (forward)
-                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(m_driverController.getLeftY() * MaxSpeed * 0.2) // Drive forward with positive Y (forward)
+                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed * 0.2) // Drive left with negative X (left)
+                    .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate * 0.2) // Drive counterclockwise with negative X (left)
             )
         );
-
+        m_driverController.x().whileTrue(new IndexerCommand(m_indexerSubsystem));
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -77,7 +78,7 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        m_driverController.x().whileTrue(new IndexerCommand(m_indexerSubsystem, setIndexerMotorSpeed(0.5)));
+        
     }
 
     public Command getAutonomousCommand() {
