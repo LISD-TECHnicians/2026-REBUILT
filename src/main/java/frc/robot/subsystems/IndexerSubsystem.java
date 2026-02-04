@@ -5,7 +5,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.RobotConstants.CTREConstants;
-import frc.robot.Constants.RobotConstants.IndexerConstants;
+import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerConstants.IndexerConstants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs; 
@@ -28,7 +29,7 @@ public class IndexerSubsystem extends SubsystemBase{
         = new VoltageOut(0);
     
     public IndexerSubsystem() {
-        m_indexerMotor = new TalonFX(IndexerConstants.kIndexerMotorID);
+        m_indexerMotor = new TalonFX(IndexerConstants.kIndexerMotorID, TunerConstants.kCANBus);
           }
 
         public void setIndexerMotorSpeed(double setSpeed) {
@@ -37,13 +38,13 @@ public class IndexerSubsystem extends SubsystemBase{
             (Units.Volts.of(setSpeed * CTREConstants.kBatterySupplyVolts.in(Units.Volts))));
           }
 
-        public void setIntakeMotorSpeed(AngularVelocity setSpeed) {
+        public void setIndexerMotorSpeed(AngularVelocity setSpeed) {
             m_indexerMotor.setControl(
             m_indexerVelocityRequest.withVelocity
             (Units.RadiansPerSecond.of(setSpeed.in(Units.RadiansPerSecond))));
           }
 
-        public void stopIntake() {
+        public void stopIndexer() {
         m_indexerMotor.set(0);
           }
 
