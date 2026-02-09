@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.units.Units;
@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         public Angle positionDegrees() {
-            return Units.Degrees.of(degrees);
+            return Units.Degrees.of(this.degrees);
         }
     }
 
@@ -48,11 +48,13 @@ public class IntakeSubsystem extends SubsystemBase {
             = new DynamicMotionMagicVoltage(
             Units.Rotations.of(0),  
             IntakeConstants.kPivotRunVelocity, 
-            IntakeConstants.kPivotRunAcceleration); 
+            IntakeConstants.kPivotRunAcceleration);
+    private VoltageOut m_pivotVoltageRequest
+        = new VoltageOut(0); 
 
     public IntakeSubsystem() {
-        m_intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorID);
-        m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
+        m_intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorID, CTREConstants.kCANBus);
+        m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID, CTREConstants.kCANBus);
         configureMotors();
     }
 
@@ -116,13 +118,24 @@ public class IntakeSubsystem extends SubsystemBase {
         AngularAcceleration requestAcceleration,
         double requestJerk) {
         m_pivotDynamicMotionMagicRequest.Velocity 
-            = requestVelocity.in(Units.RotationsPerSecond);
+            = 80;
         m_pivotDynamicMotionMagicRequest.Acceleration 
-            = requestAcceleration.in(Units.RotationsPerSecondPerSecond);
-        m_pivotDynamicMotionMagicRequest.Jerk = requestJerk; // rotations per second cubed
+            = 400;
+        m_pivotDynamicMotionMagicRequest.Jerk 
+            = 4000; // rotations per second cubed
+        /* 
+        System.out.println(requestVelocity.in(Units.RotationsPerSecond));
+        System.out.println(requestAcceleration.in(Units.RotationsPerSecondPerSecond));
+        System.out.println(requestJerk);
+        System.out.println(position.positionDegrees());
+        */
+
+        Angle targetDegrees = position.positionDegrees();
+        Angle targetRotations = Units.Rotations.of(targetDegrees.in(Units.Degrees) / 360.0);
+        
         m_pivotMotor.setControl(
             m_pivotDynamicMotionMagicRequest
-            .withPosition(position.positionDegrees())
+            .withPosition(targetRotations)
         );
     }
 
@@ -137,6 +150,17 @@ public class IntakeSubsystem extends SubsystemBase {
         );
     }
 
+    /*public void setPivotMotorSpeed(double setPivotSpeed) {
+        m_pivotMotor.setControl(
+            m_pivotVoltageRequest
+                .withOutput(Units.Volts.of(
+                    setPivotSpeed
+                    * CTREConstants.kBatterySupplyVolts.in(Units.Volts)
+                    )
+                )
+        );
+    } */
+
     public void setIntakeMotorSpeed(AngularVelocity setSpeed) {
         m_intakeMotor.setControl(
             m_intakeVelocityRequest
@@ -150,7 +174,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean pivotInPosition() {
         final Angle currentPosition = m_pivotMotor.getPosition().getValue();
         final Angle targetPosition = m_pivotDynamicMotionMagicRequest.getPositionMeasure();
-        return currentPosition.isNear(targetPosition, IntakeConstants.kPivotDegreesTolerance);
+        return currentPosition.isNear(Units.Degrees.of(targetPosition.in(Units.Degrees)), IntakeConstants.kPivotDegreesTolerance);
     }
 
     public void stopIntake() {

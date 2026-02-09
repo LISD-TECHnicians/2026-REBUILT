@@ -4,8 +4,8 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeSubsystem.Position;
+import frc.robot.Subsystems.IntakeSubsystem;
+import frc.robot.Subsystems.IntakeSubsystem.Position;
 
 
 public class IntakePositionCommand extends Command {
@@ -37,7 +37,7 @@ public class IntakePositionCommand extends Command {
                     (IntakeConstants.kPivotHomeVelocityCoef);  
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
                     (IntakeConstants.kPivotHomeAccelerationCoef);  
-                m_jerk = IntakeConstants.kPivotHomeJerk;  
+                m_jerk = IntakeConstants.kPivotHomeJerk;
                 break;
                 
             case INDEXING:
@@ -58,27 +58,27 @@ public class IntakePositionCommand extends Command {
 
     @Override
     public void initialize() {
+       
+    }
+
+    @Override
+    public void execute() {
         m_intakeSubsystem.setPivotPosition(
             m_targetPosition,
             m_velocity,
             m_acceleration,
             m_jerk
-        );
-    }
-
-    @Override
-    public void execute() {
-        // should not need to call again here -Confirm w/ testing-
+         );
     }
 
     @Override
     public void end(boolean interrupted) {
-        // m_intakeSubsystem.stopPivot();
+        m_intakeSubsystem.stopPivot();
     }
 
     @Override
     public boolean isFinished() {
-        return m_intakeSubsystem.pivotInPosition();
+        return false; //m_intakeSubsystem.pivotInPosition();
         // test and consider backup plan 
     }
 }

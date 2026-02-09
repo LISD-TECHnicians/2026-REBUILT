@@ -6,6 +6,7 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -16,11 +17,13 @@ public class Constants {
              * Setup for Field Oriented Control Configuration on KrakenX60 Motors
              * Only includes constants actually used by Intake subsystem
             */ 
+            public static final CANBus kCANBus = new CANBus("canivore", "./logs/example.hoot");
+
             public static final Voltage kBatterySupplyVolts 
                  = Units.Volts.of(12.0);
             
-            public static final AngularVelocity kKrakenX60MaxRadsSecond 
-                    = Units.RadiansPerSecond.of((96.67 * 2 * Math.PI)); // 96.67 RPS max
+            public static final AngularVelocity kKrakenX60MaxRPS
+                    = Units.RotationsPerSecond.of((96.67)); // 96.67 RPS max
             
             public static final AngularAcceleration kKrakenX60MaxRadsSecondSecond 
                 = Units.RadiansPerSecondPerSecond.of(11267.0); // Pre-calculated from stall torque/inertia
@@ -28,12 +31,12 @@ public class Constants {
 
         public class IntakeConstants {
             // Motor IDs
-            public static final int kIntakeMotorID = 0;
-            public static final int kPivotMotorID = 1;
+            public static final int kIntakeMotorID = 10;
+            public static final int kPivotMotorID = 9;
             
             // Speed coefficients
             public static final double kIntakeSpeedRunCoef = .50; 
-            public static final double kPivotSpeedRunCoef = .10; 
+            public static final double kPivotSpeedRunCoef = .20; 
             
             // Pivot motor configuration
             public static final double kPivotMotorGearReduction = 1.0; // update based on team's gearbox selection
@@ -41,14 +44,17 @@ public class Constants {
             public static final double kPivotDeployVelocityCoef = .5;
             public static final double kPivotDeployAccelerationCoef = .8;
             public static final double kPivotDeployJerk = 200;
+            //public static final double kPivotDeployVoltage = 0;
             
             public static final double kPivotHomeVelocityCoef = .8;
             public static final double kPivotHomeAccelerationCoef = 1.0;
             public static final double kPivotHomeJerk = 200; 
-            
+            //public static final double kPivotHomeVoltage = 0;
+
             public static final double kPivotIndexingVelocityCoef = .7;
             public static final double kPivotIndexingAccelerationCoef = .8;
             public static final double kPivotIndexingJerk = 200;
+            //public static final double kPivotIndexingVoltage = 0;
             
             public static final double kPivotOscillateJerk = 300;
             public static final double kPivotOscillateVelocityCoef = .8;
@@ -80,10 +86,10 @@ public class Constants {
             public static final double kPivotAccelrationMotionCoef = .25;
             
             public static final AngularVelocity kIntakeRunVelocity = 
-                CTREConstants.kKrakenX60MaxRadsSecond.times(kIntakeSpeedRunCoef);
+                CTREConstants.kKrakenX60MaxRPS.times(kIntakeSpeedRunCoef);
             
             public static final AngularVelocity kPivotRunVelocity = 
-                CTREConstants.kKrakenX60MaxRadsSecond.times(kPivotSpeedRunCoef);
+                CTREConstants.kKrakenX60MaxRPS.times(kPivotSpeedRunCoef);
         
             public static final AngularAcceleration kPivotRunAcceleration = 
                 CTREConstants.kKrakenX60MaxRadsSecondSecond.times(kPivotAccelrationMotionCoef);
