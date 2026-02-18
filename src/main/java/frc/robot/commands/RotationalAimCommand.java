@@ -16,6 +16,10 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.AimHelper;
+import frc.robot.util.JoystickProfileHelper;
+import frc.robot.util.ManualDriveInput;
+import frc.robot.generated.TunerConstants;
+
 
 public class RotationalAimCommand extends Command {
     private Translation2d hubPosition;
@@ -31,8 +35,14 @@ public class RotationalAimCommand extends Command {
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
             .withHeadingPID(1, 0, 0); // TODO: test and tune this.
 
-    public RotationalAimCommand(CommandSwerveDrivetrain swerveDrivetrain, AimHelper aimHelper) {
+    private final JoystickProfileHelper m_profileHelper;
+
+    public RotationalAimCommand(
+        CommandSwerveDrivetrain swerveDrivetrain,
+        DoubleSupplier yValue,
+        DoubleSupplier xValue) {
         this.m_commandSwerveDrivetrain = swerveDrivetrain;
+        this.m_profileHelper = new JoystickProfileHelper(yValue, xValue);
         addRequirements(swerveDrivetrain);
     }
 
@@ -46,15 +56,23 @@ public class RotationalAimCommand extends Command {
         (m_commandSwerveDrivetrain.getState().Pose, 
          hubPosition, 
          desiredRotation);
-
-        m_commandSwerveDrivetrain.setControl(m_fieldCentricFacingAngle);
-    }
+        final ManualDriveInput input = m_profileHelper.getSmoothedInput();
+        m_commandSwerveDrivetrain.setControl
+        (
+            m_fieldCentricFacingAngle
+                .withVelocityX(TunerConstants.kSpeedAt12Volts.times(input.forward))
+                .withVelocityY(TunerConstants.kSpeedAt12Volts.times(input.left))
+                .withTargetDirection(desiredRotation)
+        );
+    }           
 
     @Override
     public void end(boolean interrupted) {}
 
     @Override
     public boolean isFinished() {
+        return false;
+        /* 
         Translation2d hubPosition = AimHelper.getHubPosition();
         Rotation2d targetRotation = AimHelper.getRotationToHub(
             m_commandSwerveDrivetrain.getState().Pose,
@@ -64,5 +82,6 @@ public class RotationalAimCommand extends Command {
         Rotation2d currentRotation = m_commandSwerveDrivetrain.getState().Pose.getRotation();
         
         return AimHelper.aimAcceptable(targetRotation, currentRotation, m_allowedDeviation);
-    }
+        */
+        }
 }
