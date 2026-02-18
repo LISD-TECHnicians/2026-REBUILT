@@ -8,6 +8,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.config.RobotConfig;
 
 public class Constants {
     public class RobotConstants {
@@ -30,6 +31,10 @@ public class Constants {
             
             public static final int kIndexerMotorID = 9;
             public static final double kIndexerMotorSpeed = 0.5;
+        }
+    
+        public class PathPlannerConstants {
+            //public static final RobotConfig robotConfig = null;
         }
     }
 }

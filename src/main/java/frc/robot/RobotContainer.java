@@ -8,8 +8,17 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -38,8 +47,31 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
         configureBindings();
+        // Needed For PathPlanner
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+        registerNamedCommands();
+        // ...
+
+    /* For convenience a programmer could change this when going to competition.
+    boolean isCompetition = true;
+
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    // As an example, this will only show autos that start with "comp" while at
+    // competition as defined by the programmer
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> isCompetition
+        ? stream.filter(auto -> auto.getName().startsWith("comp"))
+        : stream
+    );
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+        */
     }
 
     private void configureBindings() {
@@ -48,9 +80,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(m_driverController.getLeftY() * MaxSpeed * 0.2) // Drive forward with positive Y (forward)
-                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed * 0.2) // Drive left with negative X (left)
-                    .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate * 0.2) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed) // Drive forward with positive Y (forward)
+                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
         m_driverController.x().whileTrue(new IndexerCommand(m_indexerSubsystem));
@@ -81,9 +113,27 @@ public class RobotContainer {
         
     }
 
+    public void registerNamedCommands() {
+        NamedCommands.registerCommand("Index Fuel", new IndexerCommand(m_indexerSubsystem));
+    }
+
     public Command getAutonomousCommand() {
+        
+        try{
+        
+        return autoChooser.getSelected();
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    } 
+  
+
+     // This method loads the auto when it is called, however, it is recommended
+    // to first load your paths/autos when code starts, then return the
+    // pre-loaded auto/path
+    }
         // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
+       /*  final var idle = new SwerveRequest.Idle();
         return Commands.sequence(
             // Reset our field centric heading to match the robot
             // facing away from our alliance station wall (0 deg).
@@ -98,5 +148,5 @@ public class RobotContainer {
             // Finally idle for the rest of auton
             drivetrain.applyRequest(() -> idle)
         );
-    }
+    } */
 }
