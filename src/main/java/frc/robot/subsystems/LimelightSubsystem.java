@@ -1,0 +1,68 @@
+package frc.robot.subsystems;
+
+import java.util.Optional;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
+
+public class LimelightSubsystem extends SubsystemBase{
+    private final String m_limelightName;
+    private final NetworkTable m_telemetryTable;
+    private final StructPublisher<Pose2d> m_structPublisher;
+
+
+    public LimelightSubsystem(String limelightName) {
+        this.m_limelightName = limelightName;
+        this.m_telemetryTable = NetworkTableInstance.getDefault().getTable("SmartDashboard/" + limelightName); // Create sub directory inside SmartDashboard namespace
+        this.m_structPublisher = m_telemetryTable.getStructTopic("Estimated Robot Pose", Pose2d.struct).publish(); // Publishing pose data to the sub directoy for the limelight
+
+        LimelightHelpers.setPipelineIndex(limelightName, 0);
+    }
+
+    /*public Optional<Measurement> getMeasurement(Pose2d currentRobotPose) {
+        LimelightHelpers.SetRobotOrientation(m_limelightName, currentRobotPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
+        final PoseEstimate poseEstimate_MegaTag1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(m_limelightName);
+        final PoseEstimate poseEstimate_MegaTag2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_limelightName);
+        if (
+            poseEstimate_MegaTag1 == null 
+                || poseEstimate_MegaTag2 == null
+                || poseEstimate_MegaTag1.tagCount == 0
+                || poseEstimate_MegaTag2.tagCount == 0
+        ) {
+            return Optional.empty();
+        }
+
+        // Combine the readings from MegaTag1 and MegaTag2:
+        // 1. Use the more stable position from MegaTag2
+        // 2. Use the rotation from MegaTag1 (with low confidence) to counteract gyro drift
+        poseEstimate_MegaTag2.pose = new Pose2d(
+            poseEstimate_MegaTag2.pose.getTranslation(),
+            poseEstimate_MegaTag1.pose.getRotation()
+        );
+        final Matrix<N3, N1> standardDeviations = VecBuilder.fill(0.1, 0.1, 10.0); // test and refine as needed. 
+
+        m_structPublisher.set(poseEstimate_MegaTag2.pose);
+        return Optional.of(new Measurement(poseEstimate_MegaTag2, standardDeviations));
+    }*/
+
+    public double getRawTimeStamp() {
+        return Timer.getFPGATimestamp();
+    }
+
+    public double getAdjustedTimestamp() {
+        return getRawTimeStamp() - (LimelightHelpers.getLatency_Capture("limelight-front") + 
+        LimelightHelpers.getLatency_Pipeline("limelight-front")) / 1000;
+    }
+}
