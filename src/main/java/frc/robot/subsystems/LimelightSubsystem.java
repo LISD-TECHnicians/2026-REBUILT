@@ -10,6 +10,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.LimelightHelpers;
@@ -26,9 +27,10 @@ public class LimelightSubsystem extends SubsystemBase{
         this.m_telemetryTable = NetworkTableInstance.getDefault().getTable("SmartDashboard/" + limelightName); // Create sub directory inside SmartDashboard namespace
         this.m_structPublisher = m_telemetryTable.getStructTopic("Estimated Robot Pose", Pose2d.struct).publish(); // Publishing pose data to the sub directoy for the limelight
 
+        LimelightHelpers.setPipelineIndex(limelightName, 0);
     }
 
-    public Optional<Measurement> getMeasurement(Pose2d currentRobotPose) {
+    /*public Optional<Measurement> getMeasurement(Pose2d currentRobotPose) {
         LimelightHelpers.SetRobotOrientation(m_limelightName, currentRobotPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         final PoseEstimate poseEstimate_MegaTag1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(m_limelightName);
@@ -53,15 +55,14 @@ public class LimelightSubsystem extends SubsystemBase{
 
         m_structPublisher.set(poseEstimate_MegaTag2.pose);
         return Optional.of(new Measurement(poseEstimate_MegaTag2, standardDeviations));
+    }*/
+
+    public double getRawTimeStamp() {
+        return Timer.getFPGATimestamp();
     }
 
-    public static class Measurement {
-        public final PoseEstimate poseEstimate;
-        public final Matrix<N3, N1> standardDeviations;
-
-        public Measurement(PoseEstimate poseEstimate, Matrix<N3, N1> standardDeviations) {
-            this.poseEstimate = poseEstimate;
-            this.standardDeviations = standardDeviations;
-        }
+    public double getAdjustedTimestamp() {
+        return getRawTimeStamp() - (LimelightHelpers.getLatency_Capture("limelight-front") + 
+        LimelightHelpers.getLatency_Pipeline("limelight-front")) / 1000;
     }
 }

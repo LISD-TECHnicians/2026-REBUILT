@@ -6,16 +6,20 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+/*
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-
+*/
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,11 +27,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.commands.IndexerCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.commands.UpdateVisionMeasurementCommand;
 
 public class RobotContainer {
     private final IndexerSubsystem m_indexerSubsystem = new IndexerSubsystem();
@@ -41,17 +48,25 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
+    private final LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem("limelight-front"); // replace with odometry limelight name. 
+
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController m_driverController = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final UpdateVisionMeasurementCommand m_UpdateVisionCommand = new UpdateVisionMeasurementCommand(drivetrain, m_limelightSubsystem);
 
     private final SendableChooser<Command> autoChooser;
+
+    private final Trigger poseUpdate = new Trigger(() -> LimelightHelpers.getTV("limelight-front"));
 
     public RobotContainer() {
         configureBindings();
         // Needed For PathPlanner
+
+        //m_limelightSubsystem.setDefaultCommand(m_UpdateVisionCommand);
+        poseUpdate.whileTrue(m_UpdateVisionCommand);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -114,7 +129,7 @@ public class RobotContainer {
     }
 
     public void registerNamedCommands() {
-        NamedCommands.registerCommand("Index Fuel", new IndexerCommand(m_indexerSubsystem));
+        //NamedCommands.registerCommand("Index Fuel", new IndexerCommand(m_indexerSubsystem));
     }
 
     public Command getAutonomousCommand() {
