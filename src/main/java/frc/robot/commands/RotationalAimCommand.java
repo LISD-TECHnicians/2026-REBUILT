@@ -20,7 +20,6 @@ import frc.robot.util.JoystickProfileHelper;
 import frc.robot.util.ManualDriveInput;
 import frc.robot.generated.TunerConstants;
 
-
 public class RotationalAimCommand extends Command {
     private Translation2d hubPosition;
     private Rotation2d desiredRotation;
