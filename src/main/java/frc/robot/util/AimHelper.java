@@ -24,7 +24,7 @@ public class AimHelper {
         final Rotation2d hubRotationBlueAlliance 
             = desiredHubPosition.minus(robotPosition).getAngle();
         final Rotation2d hubRotationOperator 
-            = hubRotationBlueAlliance.rotateBy(operatorForwardPosition);
+            = hubRotationBlueAlliance.rotateBy(Rotation2d.fromDegrees(0));
         return hubRotationOperator;
     }
 

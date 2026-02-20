@@ -32,14 +32,15 @@ public class RotationalAimCommand extends Command {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo)
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
-            .withHeadingPID(1, 0, 0); // TODO: test and tune this.
+            .withHeadingPID(5, 0, 0); // TODO: test and tune this.
 
     private final JoystickProfileHelper m_profileHelper;
 
     public RotationalAimCommand(
         CommandSwerveDrivetrain swerveDrivetrain,
         DoubleSupplier yValue,
-        DoubleSupplier xValue) {
+        DoubleSupplier xValue) 
+    {
         this.m_commandSwerveDrivetrain = swerveDrivetrain;
         this.m_profileHelper = new JoystickProfileHelper(yValue, xValue);
         addRequirements(swerveDrivetrain);

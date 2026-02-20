@@ -42,21 +42,7 @@ public class UpdateVisionMeasurementCommand extends Command {
             if (LimelightHelpers.getTV("limelight-front")) {
                 m_commandSwerveDrivetrain.addVisionMeasurement(
                     m_robotPose2d, m_limelightSubsystem.getAdjustedTimestamp());
-            } // Utils.fpgaToCurrentTime(m_limelightSubsystem.getAdjustedTimestamp()
-
-
-
-            /*   m_measurement = m_limelightSubsystem.getMeasurement(m_robotPose2d);
-            if (m_measurement.isPresent()) {
-                m_commandSwerveDrivetrain.addVisionMeasurement(
-                    m_measurement., 
-                    m_measurement.poseEstimate.timestampSeconds,
-                    m_measurement.standardDeviations
-                )
-            }
-            */
-            
-            //System.out.println(m_commandSwerveDrivetrain.getState().Pose);
+            } 
             
             }
 
