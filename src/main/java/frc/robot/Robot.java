@@ -7,19 +7,30 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Util.SmartDashboardHelper; 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private final RobotContainer m_robotContainer;
+  private final SmartDashboardHelper m_dashboardHelper;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
+    m_dashboardHelper = m_robotContainer.getDashHelper();
+  }
+
+  @Override
+  public void robotInit() {
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    SmartDashboard.putBoolean("Hub Active", m_dashboardHelper.getIsActivePhase());
+    SmartDashboard.putString("Hub Message", m_dashboardHelper.getHubMessage());
+    SmartDashboard.putNumber("Current Phase", m_dashboardHelper.getCurrentPhase());
+    SmartDashboard.putNumber("Period Countdown", m_dashboardHelper.getReaminingPeriodTime());
   }
 
   @Override
