@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 3.555,
+        "y": 7.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.25,
-        "y": 0.0
+        "x": 1.0591111111111111,
+        "y": 7.3676
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.0,
-        "y": 1.1481063742006436e-17
+        "x": 0.523,
+        "y": 7.328622222222221
       },
       "prevControl": {
-        "x": 0.25,
-        "y": 0.0
-      },
-      "nextControl": {
-        "x": -0.25,
-        "y": 4.209723372069027e-17
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.0,
-        "y": 0.0
-      },
-      "prevControl": {
-        "x": -0.25,
-        "y": 3.061616997868383e-17
+        "x": 2.335466666666667,
+        "y": 7.289644444444445
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Top Shooter Collection",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

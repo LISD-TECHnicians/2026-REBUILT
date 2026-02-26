@@ -2,8 +2,16 @@
   "robotWidth": 0.9,
   "robotLength": 0.9,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
+  "pathFolders": [
+    "Bottom Shooter Collection",
+    "Center Shooter Collection",
+    "Test Paths",
+    "Top Shooter Collection"
+  ],
+  "autoFolders": [
+    "Comp Autos",
+    "Test Autos"
+  ],
   "defaultMaxVel": 3.2,
   "defaultMaxAccel": 7.0,
   "defaultMaxAngVel": 392.0,

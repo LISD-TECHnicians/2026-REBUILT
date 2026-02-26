@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Auto Path (Over Bump 1)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Auto Path (Refilling)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Auto Path (Over Bump 2 & Score)"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Comp Autos",
+  "choreoAuto": false
+}
