@@ -1,5 +1,6 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -21,7 +22,7 @@ import frc.robot.Constants.RobotConstants.CTREConstants;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-
+// TODO: Change all units of rotation to use rotations
     public enum Position {
         DEPLOYED(0),
         INDEXING(20),
@@ -101,7 +102,7 @@ public class IntakeSubsystem extends SubsystemBase {
                     .withKI(IntakeConstants.kPivotSlot0KI)
                     .withKD(IntakeConstants.kPivotSlot0KD)
                     .withKV(CTREConstants.kBatterySupplyVolts.in(Units.Volts)
-                    / (CTREConstants.kKrakenX60MaxRadsSecond.in(Units.RotationsPerSecond) 
+                    / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
                     * (IntakeConstants.kPivotMotorGearReduction)))
                     .withKG(IntakeConstants.kPivotSlot0KG)
             );
@@ -123,13 +124,7 @@ public class IntakeSubsystem extends SubsystemBase {
             = 400;
         m_pivotDynamicMotionMagicRequest.Jerk 
             = 4000; // rotations per second cubed
-        /* 
-        System.out.println(requestVelocity.in(Units.RotationsPerSecond));
-        System.out.println(requestAcceleration.in(Units.RotationsPerSecondPerSecond));
-        System.out.println(requestJerk);
-        System.out.println(position.positionDegrees());
-        */
-
+        
         Angle targetDegrees = position.positionDegrees();
         Angle targetRotations = Units.Rotations.of(targetDegrees.in(Units.Degrees) / 360.0);
         
@@ -150,7 +145,7 @@ public class IntakeSubsystem extends SubsystemBase {
         );
     }
 
-    /*public void setPivotMotorSpeed(double setPivotSpeed) {
+    public void setPivotMotorSpeed(double setPivotSpeed) {
         m_pivotMotor.setControl(
             m_pivotVoltageRequest
                 .withOutput(Units.Volts.of(
@@ -159,7 +154,7 @@ public class IntakeSubsystem extends SubsystemBase {
                     )
                 )
         );
-    } */
+    } 
 
     public void setIntakeMotorSpeed(AngularVelocity setSpeed) {
         m_intakeMotor.setControl(
@@ -187,6 +182,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: Add logging with smartdashboard 
+        // Testing Pivot Positions --. HOME @ -.35 Rotations, Deployed @ -14.65 Rotations, Ocillate @ -8.75 Rotations
+        SmartDashboard.putNumber("Intake Position:", m_pivotMotor.getPosition().getValue().in(Units.Rotations));
     }
 }

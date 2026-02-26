@@ -24,7 +24,7 @@ public class Constants {
             
             public static final AngularVelocity kKrakenX60MaxRPS
                     = Units.RotationsPerSecond.of((96.67)); // 96.67 RPS max
-            
+
             public static final AngularAcceleration kKrakenX60MaxRadsSecondSecond 
                 = Units.RadiansPerSecondPerSecond.of(11267.0); // Pre-calculated from stall torque/inertia
         }
@@ -32,10 +32,10 @@ public class Constants {
         public class IntakeConstants {
             // Motor IDs
             public static final int kIntakeMotorID = 10;
-            public static final int kPivotMotorID = 9;
+            public static final int kPivotMotorID = 11;
             
             // Speed coefficients
-            public static final double kIntakeSpeedRunCoef = .50; 
+            public static final double kIntakeSpeedRunCoef = .85; 
             public static final double kPivotSpeedRunCoef = .20; 
             
             // Pivot motor configuration

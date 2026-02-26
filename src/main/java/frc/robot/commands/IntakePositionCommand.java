@@ -4,8 +4,8 @@ import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
-import frc.robot.Subsystems.IntakeSubsystem;
-import frc.robot.Subsystems.IntakeSubsystem.Position;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.Position;
 
 
 public class IntakePositionCommand extends Command {
