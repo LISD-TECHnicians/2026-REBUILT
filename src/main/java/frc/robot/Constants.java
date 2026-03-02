@@ -49,6 +49,7 @@ public class Constants {
         public class FeederConstants {
             public static final int kFeederMotorID = 9;
             public static final double kFeederMotorSpeed = -0.6;
+            public static final double kReverseFeederMotorSpeed = 0.6;
         }
 
         
@@ -144,6 +145,10 @@ public class Constants {
             // Shooter Motor Sets in % values
             public static final double kMinShooterMotorPercentage = .20;
 
+            // Shooter Motor sets it max rads per seconds
+            public static final AngularVelocity kMaxShooterRadsPerSeconds
+                = Units.RadiansPerSecond.of(550);
+
             // Servo motion limits
             public static final LinearVelocity kMaxLinearServoVelocity 
                 = Units.MetersPerSecond.of(0.05); 
@@ -178,7 +183,7 @@ public class Constants {
             
             // Velocity tolerance
             public static final AngularVelocity kVelocityTolerance 
-                = Units.RotationsPerSecond.of(2.0);
+                = Units.RotationsPerSecond.of(5.0);
             
             // Idle speed
             public static final double kIdleShooterPercentage = .10; // 10% idle speed to keep wheels warm

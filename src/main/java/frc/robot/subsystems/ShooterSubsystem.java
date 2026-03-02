@@ -223,7 +223,7 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public boolean isIndividualMotorAtSpeed(TalonFX motor) {
-        System.out.println("rots/s" + motor.getVelocity().getValueAsDouble());
+        System.out.println("rots/s" + motor.getVelocity().getValueAsDouble()); // confirm and set constant 
         final boolean isVelocityMode = motor.getAppliedControl().equals(m_velocityRequest);
         final AngularVelocity currentAngularVelocity = motor.getVelocity().getValue();
         final AngularVelocity targetAngularVelocity = m_velocityRequest.getVelocityMeasure();
@@ -238,7 +238,7 @@ public class ShooterSubsystem extends SubsystemBase{
         for (final TalonFX shooterMotor : m_shooterMotors) {
             shooterMotor.setControl(
                 m_velocityRequest
-                    .withVelocity(Units.RadiansPerSecond.of(565))
+                    .withVelocity(Units.RadiansPerSecond.of(setSpeed))
             );
       }
     }
