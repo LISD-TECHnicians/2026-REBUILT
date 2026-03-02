@@ -55,11 +55,11 @@ public class Constants {
         public class IntakeConstants {
             // Motor IDs
             public static final int kIntakeMotorID = 10;
-            public static final int kPivotMotorID = 11;
+            public static final int kPivotMotorID = 22;
             
             // Speed coefficients
-            public static final double kIntakeSpeedRunCoef = .85; 
-            public static final double kPivotSpeedRunCoef = .20; 
+            public static final double kIntakeSpeedRunCoef = 1.0; 
+            public static final double kPivotSpeedRunCoef = .02; 
             
             // Pivot motor configuration
             public static final double kPivotMotorGearReduction = 1.0; // update based on team's gearbox selection
@@ -141,6 +141,9 @@ public class Constants {
             public static final double kServoMaxSet = 1.0;
             public static final double kServoPositionTolerance = 0.01; // Tolerance for servo position
             
+            // Shooter Motor Sets in % values
+            public static final double kMinShooterMotorPercentage = .20;
+
             // Servo motion limits
             public static final LinearVelocity kMaxLinearServoVelocity 
                 = Units.MetersPerSecond.of(0.05); 
@@ -156,6 +159,10 @@ public class Constants {
                 = Units.Degrees.of(10.0); 
             public static final Angle kHoodMaxAngle 
                 = Units.Degrees.of(70.0); 
+
+            // TODO: Measure angle of ball leaving assembly with fixed approach.
+            public static final Angle kHoodFixedAngle // 1st Comp Fixed hood angle
+                = Units.Degrees.of(35);
             
             // Linear actuator range (in meters) - Get real measurements here!
             public static final Distance kActuatorMinLength 
@@ -174,7 +181,7 @@ public class Constants {
                 = Units.RotationsPerSecond.of(2.0);
             
             // Idle speed
-            public static final double kIdleShooterPercentage = .05; // 5% idle speed to keep wheels warm
+            public static final double kIdleShooterPercentage = .10; // 10% idle speed to keep wheels warm
         }
 
         public class ClimbConstants {

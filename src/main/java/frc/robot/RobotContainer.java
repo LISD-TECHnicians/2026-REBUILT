@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -15,6 +17,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,39 +29,55 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.RobotConstants.DriverConstants;
 import frc.robot.Constants.RobotConstants.FeederConstants;
+import frc.robot.Constants.RobotConstants.ClimbConstants;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.FeederCommand;
-//import frc.robot.commands.IntakeRunCommand;
+import frc.robot.commands.IntakeRunCommand;
 import frc.robot.commands.RotationalAimCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UpdateVisionMeasurementCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FeederSubsystem;
-//import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    //private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private double slowSpeedCoef = .60;
+    private double slowSpeedCoefRotational = .60;
+    
+    private double speedCrabWalkCoef = .75;
+
+    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
     private final FeederSubsystem m_feederSubsystem = new FeederSubsystem();
 
     private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+
+    private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+    private final SwerveRequest.FieldCentricFacingAngle m_crabWalkRequest 
+        = new SwerveRequest.FieldCentricFacingAngle()
+            .withTargetDirection(Rotation2d.fromDegrees(45));
+
     private final Telemetry logger = new Telemetry(MaxSpeed);
     private final CommandXboxController driveController = new CommandXboxController(DriverConstants.kDriveControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(DriverConstants.kOperaterControllerPort);
+    //private final Trigger brakeTrigger = new Trigger(() -> false);
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    //private final IntakeSubsystem m_intakeSubsystem;
+    ;
 
     public final LimelightSubsystem limelight = new LimelightSubsystem("limelight-front");
     private final Trigger updateVisionTrigger = new Trigger(() -> LimelightHelpers.getTV("limelight-front"));
@@ -67,8 +86,6 @@ public class RobotContainer {
     
 
     public RobotContainer() {
-        //m_intakeSubsystem = new IntakeSubsystem();
-
         configureBindings();
 
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -96,11 +113,22 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
-
-        driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driveController.a().toggleOnTrue(drivetrain.applyRequest(() -> brake));
+            
         driveController.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
         ));
+
+        driveController.povLeft().whileTrue(drivetrain.applyRequest(() ->  
+            drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * slowSpeedCoef)
+            .withVelocityY(-driveController.getLeftX() * MaxSpeed * slowSpeedCoef)
+            .withRotationalRate(-driveController.getRightX())
+            ));
+
+        driveController.povDown().whileTrue(drivetrain.applyRequest(() ->  
+            m_crabWalkRequest.withVelocityX(driveController.getLeftY() * MaxSpeed * slowSpeedCoef)
+            .withVelocityY(driveController.getLeftX() * MaxSpeed * slowSpeedCoef)
+            ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -109,7 +137,7 @@ public class RobotContainer {
         driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        driveController.povUp().whileTrue(new RotationalAimCommand(drivetrain, () -> driveController.getLeftX(), () -> driveController.getLeftY()));
+        driveController.leftTrigger().whileTrue(new RotationalAimCommand(drivetrain, () -> driveController.getLeftX(), () -> driveController.getLeftY()));
         //driveController.povDown().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
 
                 // Reset the field-centric heading on left bumper press.
@@ -117,14 +145,19 @@ public class RobotContainer {
         
                 
         drivetrain.registerTelemetry(logger::telemeterize);
-        driveController.leftBumper().whileTrue(new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed));
-        driveController.povDown().whileTrue(new ShooterCommand(m_shooterSubsystem));
-    //  driveController.x().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
+        driveController.rightTrigger().whileTrue(new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed));
+        // Intended to turn the feeder on after the fly-wheels have been on for a second
+        driveController.y().whileTrue(new ShooterCommand(m_shooterSubsystem));
+        driveController.x().whileTrue(new ShooterCommand(m_shooterSubsystem)); // Intended to be the reverse indexer binding
+        driveController.rightBumper().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
+        driveController.b().whileTrue(new ClimbCommand(m_climbSubsystem, 0.5));
     //  driveController.b().whileTrue(new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
     //  driveController.a().whileTrue(new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
     //  driveController.y().whileTrue(new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
+        
     }
         
+
     public void registerNamedCommands() {
         NamedCommands.registerCommand("Brake", drivetrain.applyRequest(() -> brake));
     }

@@ -7,28 +7,32 @@ import frc.robot.Constants.RobotConstants.PhysicsConstants;
 
 public class ShooterCommand extends Command{
     private ShooterSubsystem m_shooterSubsystem;
+    private boolean m_shooterReadyFire = false;
 
     public ShooterCommand (ShooterSubsystem shooterSubsystem){
         m_shooterSubsystem = shooterSubsystem;
         addRequirements(m_shooterSubsystem);
     }
 
-     @Override
+    @Override
     public void initialize() {
 
     }
 
     @Override
     public void execute() {
-       m_shooterSubsystem.setShooterPercentage(0.7);
-       m_shooterSubsystem.setIndexerMotorPercentage(0.25);
+        // TODO: test, refine values and set to using si units -> rads/s
+       m_shooterSubsystem.setShooterRadiansSecond(500);
+       m_shooterReadyFire = m_shooterSubsystem.shooterAtFireSpeed();
+       if (true) {m_shooterSubsystem.setIndexerMotorPercentage(0.5);}
+       else {m_shooterSubsystem.setIndexerMotorPercentage(0.0);}
     }
 
     @Override
     public void end(boolean interrupted) {
         m_shooterSubsystem.stopShooterMotors();
+        m_shooterSubsystem.stopIndexerMotor();
     }
-
     @Override
     public boolean isFinished() {
         return false; 

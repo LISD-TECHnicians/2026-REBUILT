@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -15,13 +16,13 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants.PhysicsConstants;
 import frc.robot.Constants.RobotConstants.CTREConstants;
 import frc.robot.Constants.RobotConstants.ShooterConstants;
-import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.generated.TunerConstants;
 
 public class ShooterSubsystem extends SubsystemBase{
@@ -52,7 +53,7 @@ public class ShooterSubsystem extends SubsystemBase{
         m_rightShooterMotor = new TalonFX(ShooterConstants.kRightShooterMotorID, TunerConstants.kCANBus);
         m_indexerShooterMotor = new TalonFX(ShooterConstants.kShooterMotorIndexerID, TunerConstants.kCANBus);
         m_shooterMotors = List.of(m_centerShooterMotor, m_leftShooterMotor, m_rightShooterMotor);
-        m_velocityRequest = new VelocityVoltage(0).withSlot(0);
+        m_velocityRequest = new VelocityVoltage(0);
         m_shooterVoltageRequest = new VoltageOut(0);
         m_indexerVoltageRequest = new VoltageOut(0);
         m_hoodServoLH = new Servo(ShooterConstants.kPWMChannelLH);
@@ -74,9 +75,16 @@ public class ShooterSubsystem extends SubsystemBase{
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Units.Amps.of(120))
-                    .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(Units.Amps.of(70))
-                    .withSupplyCurrentLimitEnable(true)
+                    .withStatorCurrentLimitEnable(false) // testing 
+                    .withSupplyCurrentLimit(Units.Amps.of(120))
+                    .withSupplyCurrentLimitEnable(false)
+            )
+            .withSlot0(
+                new Slot0Configs()
+                .withKP(1)
+                .withKI(0)
+                .withKD(0)
+                .withKV(.10) // test this as maxRPS / 12v
             );
             m_centerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
             m_leftShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
@@ -117,6 +125,15 @@ public class ShooterSubsystem extends SubsystemBase{
                 ShooterConstants.kServoMaxSet);
     }
 
+    /* 
+    public Velocity calculateFixedHoodShooterSpeed() {
+        m_shootingDistance = getShootingDistance(); 
+        m_shootingDistance = (m_shootingDistance == 0) ? 0.1 : m_shootingDistance; 
+
+
+    }
+    */
+
     /**
      * Calculates the required linear actuator length for a given hood angle using law of cosines.
      * 
@@ -129,6 +146,7 @@ public class ShooterSubsystem extends SubsystemBase{
      * @param theta Desired hood angle
      * @return Required actuator length in meters
      */
+
     public Distance calculateServoLength(Angle theta)
     {
         double thetaRadians = theta.in(Units.Radians); 
@@ -205,10 +223,11 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public boolean isIndividualMotorAtSpeed(TalonFX motor) {
+        System.out.println("rots/s" + motor.getVelocity().getValueAsDouble());
         final boolean isVelocityMode = motor.getAppliedControl().equals(m_velocityRequest);
         final AngularVelocity currentAngularVelocity = motor.getVelocity().getValue();
         final AngularVelocity targetAngularVelocity = m_velocityRequest.getVelocityMeasure();
-        return isVelocityMode && currentAngularVelocity.isNear(targetAngularVelocity, ShooterConstants.kVelocityTolerance);
+        return isVelocityMode && currentAngularVelocity.isNear(targetAngularVelocity, ShooterConstants.kVelocityTolerance); 
     }
 
     public boolean shooterAtFireSpeed() {
@@ -219,7 +238,7 @@ public class ShooterSubsystem extends SubsystemBase{
         for (final TalonFX shooterMotor : m_shooterMotors) {
             shooterMotor.setControl(
                 m_velocityRequest
-                    .withVelocity(Units.RadiansPerSecond.of(setSpeed))
+                    .withVelocity(Units.RadiansPerSecond.of(565))
             );
       }
     }
@@ -241,6 +260,15 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public void stopShooterMotors() {
         setShooterPercentage(0.0);
+    }
+
+    public void stopIndexerMotor() {
+        setIndexerMotorPercentage(0.0);
+    }
+
+    public void reverseIndexerMotor(double setSpeed) {
+        m_indexerShooterMotor.setControl(m_shooterVoltageRequest
+            .withOutput(CTREConstants.kBatterySupplyVolts.times(-setSpeed)));
     }
     
     public double getShootingDistance() {

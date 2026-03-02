@@ -20,42 +20,45 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import frc.robot.Constants.RobotConstants.CTREConstants;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
+import frc.robot.generated.TunerConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-// TODO: Change all units of rotation to use rotations
+// TODO: Test and refine pivot positions
     public enum Position {
-        DEPLOYED(0),
-        INDEXING(20),
-        HOME(100);
+        DEPLOYED(-14.65),
+        INDEXING(-9),
+        HOME(0);
 
-        private double degrees;
+        private double rotations;
 
-        private Position(double degrees) {
-            this.degrees = degrees;
+        private Position(double rotations) {
+            this.rotations = rotations;
         }
 
-        public Angle positionDegrees() {
-            return Units.Degrees.of(this.degrees);
+        public Angle positionRotations() {
+            return Units.Rotations.of(this.rotations);
         }
     }
 
     private TalonFX m_intakeMotor;
-    private TalonFX m_pivotMotor;    
+    public TalonFX m_pivotMotor;    
     private VelocityVoltage m_intakeVelocityRequest 
         = new VelocityVoltage(0);
     private VoltageOut m_intakeVoltageRequest 
         = new VoltageOut(0);
+        
     private DynamicMotionMagicVoltage m_pivotDynamicMotionMagicRequest 
             = new DynamicMotionMagicVoltage(
             Units.Rotations.of(0),  
             IntakeConstants.kPivotRunVelocity, 
             IntakeConstants.kPivotRunAcceleration);
+        
     private VoltageOut m_pivotVoltageRequest
         = new VoltageOut(0); 
 
     public IntakeSubsystem() {
-        m_intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorID, CTREConstants.kCANBus);
-        m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID, CTREConstants.kCANBus);
+        m_intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorID, TunerConstants.kCANBus.getName());
+        m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID, TunerConstants.kCANBus.getName());
         configureMotors();
     }
 
@@ -70,9 +73,9 @@ public class IntakeSubsystem extends SubsystemBase {
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Units.Amps.of(120))
-                    .withStatorCurrentLimitEnable(true)
+                    .withStatorCurrentLimitEnable(false)
                     .withSupplyCurrentLimit(Units.Amps.of(70))
-                    .withSupplyCurrentLimitEnable(true)
+                    .withSupplyCurrentLimitEnable(false)
             );
             m_intakeMotor.getConfigurator().apply(intakeMotorConfig);
     }
@@ -113,7 +116,7 @@ public class IntakeSubsystem extends SubsystemBase {
         configureIntakeMotor();
         configurePivotMotor();
     }
-
+ 
     public void setPivotPosition(Position position,
         AngularVelocity requestVelocity, 
         AngularAcceleration requestAcceleration,
@@ -125,8 +128,8 @@ public class IntakeSubsystem extends SubsystemBase {
         m_pivotDynamicMotionMagicRequest.Jerk 
             = 4000; // rotations per second cubed
         
-        Angle targetDegrees = position.positionDegrees();
-        Angle targetRotations = Units.Rotations.of(targetDegrees.in(Units.Degrees) / 360.0);
+        Angle targetRotations = position.positionRotations();
+        //Angle targetRotations = Units.Rotations.of(targetDegrees.in(Units.Degrees) / 360.0);
         
         m_pivotMotor.setControl(
             m_pivotDynamicMotionMagicRequest
@@ -165,7 +168,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 )
         );
     }
-
+ 
     public boolean pivotInPosition() {
         final Angle currentPosition = m_pivotMotor.getPosition().getValue();
         final Angle targetPosition = m_pivotDynamicMotionMagicRequest.getPositionMeasure();

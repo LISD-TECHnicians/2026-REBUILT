@@ -33,6 +33,7 @@ public class IntakeOscillateCommand extends Command {
 
     @Override 
     public void initialize() {
+         
         // assuming deployed position will be first
         m_currentTargetPosition = Position.DEPLOYED;
         m_hasReachedPosition = false;
@@ -43,10 +44,12 @@ public class IntakeOscillateCommand extends Command {
             m_acceleration,
             m_jerk
         );
+        
     }
 
     @Override 
     public void execute() {
+        
         if (m_intakeSubsystem.pivotInPosition()) {
            
             if (!m_hasReachedPosition) {
@@ -69,16 +72,19 @@ public class IntakeOscillateCommand extends Command {
         else {
             m_hasReachedPosition = false;
         }
+            
     }
 
     @Override
     public void end(boolean interrupted) {
+         
         m_intakeSubsystem.setPivotPosition(
             Position.DEPLOYED,
             m_velocity,
             m_acceleration,
             m_jerk
         );
+        
     }
 
     @Override

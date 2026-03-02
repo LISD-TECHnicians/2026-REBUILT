@@ -24,7 +24,7 @@ public class IntakePositionCommand extends Command {
     }
 
     private void configureMotionParameters() {
-        // dynamic motion magic differenciation per position.
+        // dynamic motion magic diff per position.
         switch (m_targetPosition) {
             case DEPLOYED:
                 m_velocity = IntakeConstants.kPivotRunVelocity;
@@ -63,12 +63,14 @@ public class IntakePositionCommand extends Command {
 
     @Override
     public void execute() {
+        
         m_intakeSubsystem.setPivotPosition(
             m_targetPosition,
             m_velocity,
             m_acceleration,
             m_jerk
          );
+        
     }
 
     @Override
