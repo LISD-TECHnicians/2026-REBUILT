@@ -1,3 +1,4 @@
+
 package frc.robot;
 
 import edu.wpi.first.units.Units;
@@ -55,13 +56,9 @@ public class Constants {
             // Motor IDs
             public static final int kIntakeMotorID = 10;
             public static final int kPivotMotorID = 11;
-
-            // Soft Limit configuration
-            public static final Angle kForwardPivotLimit = Units.Rotations.of(0);
-            public static final Angle kReversePivotLimit = Units.Rotations.of(0);
-
+            
             // Speed coefficients
-            public static final double kIntakeSpeedRunCoef = .20; 
+            public static final double kIntakeSpeedRunCoef = .85; 
             public static final double kPivotSpeedRunCoef = .20; 
             
             // Pivot motor configuration
