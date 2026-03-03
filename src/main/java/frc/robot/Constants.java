@@ -49,7 +49,7 @@ public class Constants {
         public class FeederConstants {
             public static final int kFeederMotorID = 9;
             public static final double kFeederMotorSpeed = -0.6;
-            public static final double kReverseFeederMotorSpeed = 0.6;
+            public static final double kReverseFeederMotorSpeed = 1.0;
         }
 
         
@@ -181,12 +181,38 @@ public class Constants {
             public static final double kRadiusShooterWheel = 0.0508; // 2-inch wheel radius in meters
             public static final double kEffectiveKineticCoef = 0.95; // Energy efficiency coefficient
             
-            // Velocity tolerance
-            public static final AngularVelocity kVelocityTolerance 
-                = Units.RotationsPerSecond.of(5.0);
+            // Shooter Velocities and magnitudes
+            public static final double kMaximumRotationsMagnitude = 91.5; // Tune this Value for adjustments 
+            public static final double kMaximumRotationsAcceptableMagnitude = 1.0; // 100% of available motor speed is used 
+             public static final double kMinimumRotationsAcceptableMagnitude = 59.68;
+
+            public static final AngularVelocity kVelocityMaximumPossibleRot 
+                = Units.RotationsPerSecond.of(kMaximumRotationsMagnitude);
+
+            public static final AngularVelocity kVelocityMaximumPossibleRads
+                = Units.RadiansPerSecond.of(kVelocityMaximumPossibleRot.in(Units.RadiansPerSecond));
+
+            public static final AngularVelocity kVelocityMaximumAcceptableRot 
+                = Units.RotationsPerSecond.of(kVelocityMaximumPossibleRot.times
+                (kMaximumRotationsAcceptableMagnitude).in(
+                Units.RotationsPerSecond));
+            // refactor this
+            public static final AngularVelocity kVelocityMaximumAcceptableRads
+                = Units.RotationsPerSecond.of(kVelocityMaximumAcceptableRot.times
+                (kMaximumRotationsAcceptableMagnitude).in(
+                Units.RadiansPerSecond));
+
+            public static final AngularVelocity kVelocityMimimumAcceptableRads
+                = Units.RotationsPerSecond.of(kVelocityMaximumAcceptableRot.times
+                (kMinimumRotationsAcceptableMagnitude).in(
+                Units.RadiansPerSecond));
+
+            public static final AngularVelocity kVelocityToleranceRot 
+                = Units.RotationsPerSecond.of(4.75); // 10% of max --> tune and test 
+
             
             // Idle speed
-            public static final double kIdleShooterPercentage = .10; // 10% idle speed to keep wheels warm
+            public static final double kIdleShooterPercentage = .15; // 15% idle speed to prevent dead starting at ramp up
         }
 
         public class ClimbConstants {
@@ -200,6 +226,7 @@ public class Constants {
         public class DriverConstants {
             public static final int kDriveControllerPort = 0;
             public static final int kOperaterControllerPort = 1;
+            public static final double kDriveControllerDeadband = .15; 
 
             //public static final double DEADBAND = 0.15; 
             //public static final double DEBOUNCE_TIME = 0.2;

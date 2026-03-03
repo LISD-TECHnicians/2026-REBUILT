@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -79,12 +80,17 @@ public class ShooterSubsystem extends SubsystemBase{
                     .withSupplyCurrentLimit(Units.Amps.of(120))
                     .withSupplyCurrentLimitEnable(false)
             )
+            .withVoltage(
+                new VoltageConfigs()
+                    .withPeakForwardVoltage(Units.Volts.of(11))
+                    .withPeakReverseVoltage(Units.Volts.of(-11))
+            )
             .withSlot0(
                 new Slot0Configs()
-                .withKP(1)
-                .withKI(0)
+                .withKP(0.5)
+                .withKI(2)
                 .withKD(0)
-                .withKV(.10) // test this as maxRPS / 12v
+                .withKV(0.125) // test this as maxRPS / 12v
             );
             m_centerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
             m_leftShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
@@ -177,7 +183,7 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public void rotateHood() {
-        Angle targetHoodAngle = getCalculatedPitch(); 
+        Angle targetHoodAngle = null;//getCalculatedPitch(); 
         Distance calculatedLength = calculateServoLength(targetHoodAngle); // applies law cosines
         Distance targetActuatorLength 
             = calculatedLength.minus(ShooterConstants.kActuatorOffset); 
@@ -187,47 +193,40 @@ public class ShooterSubsystem extends SubsystemBase{
         setServo(servoSetValue);
     }
 
-    public Angle getCalculatedPitch() {
+    /*public AngularVelocity getCalculatedSpeed() {
         m_shootingDistance = getShootingDistance(); 
         m_shootingDistance = (m_shootingDistance == 0) ? 0.1 : m_shootingDistance; 
         
         /* 
                  may just wish to replace with a constant representing the ideal shooter speed. 
-        */ 
-        m_tangentialVelocity = getTangentialVelocity() * ShooterConstants.kEffectiveKineticCoef;
         
-        m_discriminant = Math.pow(m_tangentialVelocity, 4) - PhysicsConstants.kGravity
+        
+        //m_discriminant = Math.sqrt((PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2)) / (2 * Math.pow(Math.cos(30), 2) * (m_shootingDistance * Math.tan(30) - PhysicsConstants.kDeltaHeight)))
+        
+        /* = Math.pow(m_tangentialVelocity, 4) - PhysicsConstants.kGravity
              * (PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2) + 2 * 
                 Math.pow(m_tangentialVelocity, 2) * PhysicsConstants.kDeltaHeight);
         
-        if (m_discriminant < 0) {
-            return Units.Degrees.of(0.0); // Target unreachable 
+        double heightComponent = m_shootingDistance * Math.tan(30) - PhysicsConstants.kDeltaHeight;
+
+        if (heightComponent < 0) {
+            return 0.0; // Target unreachable 
         }
         
-        double tanTheta1 = (Math.pow(m_tangentialVelocity, 2) - Math.sqrt(m_discriminant)) 
-                / (PhysicsConstants.kGravity * m_shootingDistance); 
+        double denominator = Math.pow(Math.cos(30), 2) * heightComponent;
 
-        double tanTheta2 = (Math.pow(m_tangentialVelocity, 2) + Math.sqrt(m_discriminant)) 
-            / (PhysicsConstants.kGravity * m_shootingDistance); 
+        double exitV = Math.sqrt((PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2)) / denominator);
 
-        // Use higher arc (tanTheta2) for shot trajectory
-        double thetaRadians = Math.atan(tanTheta2);
-        double thetaDegrees = Math.toDegrees(thetaRadians);
+        return exitV * ShooterConstant.kEffectiveKineticCoef;
         
-        thetaDegrees 
-            = MathUtil.clamp(thetaDegrees, 
-                            ShooterConstants.kHoodMinAngle.in(Units.Degrees), 
-                            ShooterConstants.kHoodMaxAngle.in(Units.Degrees));
-        
-        return Units.Degrees.of(thetaDegrees); 
-    }
+    }*/
 
     public boolean isIndividualMotorAtSpeed(TalonFX motor) {
-        System.out.println("rots/s" + motor.getVelocity().getValueAsDouble()); // confirm and set constant 
+        System.out.println("rads/s" + (motor.getVelocity().getValueAsDouble() * 2 * Math.PI)); // confirm and set constant 
         final boolean isVelocityMode = motor.getAppliedControl().equals(m_velocityRequest);
         final AngularVelocity currentAngularVelocity = motor.getVelocity().getValue();
         final AngularVelocity targetAngularVelocity = m_velocityRequest.getVelocityMeasure();
-        return isVelocityMode && currentAngularVelocity.isNear(targetAngularVelocity, ShooterConstants.kVelocityTolerance); 
+        return isVelocityMode && currentAngularVelocity.isNear(targetAngularVelocity, ShooterConstants.kVelocityToleranceRot); 
     }
 
     public boolean shooterAtFireSpeed() {

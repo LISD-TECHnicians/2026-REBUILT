@@ -22,7 +22,7 @@ public class ClimbCommand extends Command{
 
     @Override
     public void execute() {
-       m_climbSubsystem.setClimbMotorSpeed(0.5);
+       m_climbSubsystem.setClimbMotorSpeed(setSpeed);
     }
 
     @Override

@@ -22,15 +22,16 @@ public class ShooterCommand extends Command{
     @Override
     public void execute() {
         // TODO: test, refine values and set to using si units -> rads/s
-       m_shooterSubsystem.setShooterRadiansSecond(590);
+       m_shooterSubsystem.setShooterRadiansSecond(400); //575
        m_shooterReadyFire = m_shooterSubsystem.shooterAtFireSpeed();
-       if (m_shooterReadyFire) {m_shooterSubsystem.setIndexerMotorPercentage(0.5);}
+       if (m_shooterReadyFire) {m_shooterSubsystem.setIndexerMotorPercentage(1.0);}
        else {m_shooterSubsystem.setIndexerMotorPercentage(0.0);}
     }
 
     @Override
     public void end(boolean interrupted) {
         m_shooterSubsystem.stopShooterMotors();
+        m_shooterSubsystem.stopIndexerMotor();
     }
 
     @Override
