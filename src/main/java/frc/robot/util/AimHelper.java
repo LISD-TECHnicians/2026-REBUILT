@@ -9,10 +9,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import frc.robot.Constants.RobotConstants.FieldConstants;
+import frc.robot.Constants.RobotConstants.PhysicsConstants;
+import frc.robot.Constants.RobotConstants.ShooterConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class AimHelper {
 
@@ -34,6 +38,33 @@ public class AimHelper {
             return FieldConstants.kBlueHubTranslation2d;
         }
         else {return FieldConstants.kRedHubTranslation2d;}
+    }
+
+    public Translation2d getRobotPosition(CommandSwerveDrivetrain driveSubsystem) {
+        return driveSubsystem.getState().Pose.getTranslation();
+    }
+
+    public static AngularVelocity getCalculatedSpeed(double m_shootingDistance) {
+        m_shootingDistance = (m_shootingDistance == 0) ? 0.1 : m_shootingDistance; 
+        
+        double fixedHoodRadians = ShooterConstants.kHoodFixedAngle.in(Units.Radians);
+        // may just wish to replace with a constant representing the ideal shooter speed. 
+        
+        double heightComponent = m_shootingDistance * Math.tan(fixedHoodRadians) 
+        - PhysicsConstants.kDeltaHeight;
+        
+
+        if (heightComponent < 0) {
+            return Units.RadiansPerSecond.of(0.0); // Target unreachable 
+        }
+        
+        double denominator = 2 * Math.pow(Math.cos(fixedHoodRadians), 2) * heightComponent;
+
+        double exitV = Math.sqrt((PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2)) / denominator);
+
+        double exitRotationalV = exitV / ShooterConstants.kRadiusShooterWheel;
+
+        return Units.RadiansPerSecond.of(exitRotationalV * ShooterConstants.kEffectiveKineticCoef);
     }
 
     public static boolean aimAcceptable(

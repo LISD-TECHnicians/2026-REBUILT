@@ -3,9 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Position;
+
 
 
 public class IntakeOscillateCommand extends Command {
@@ -16,17 +18,20 @@ public class IntakeOscillateCommand extends Command {
     private AngularAcceleration m_acceleration;
     private double m_jerk;
     private boolean m_hasReachedPosition;
+    private Timer m_cycleTimer;
 
     public IntakeOscillateCommand(IntakeSubsystem intakeSubsystem) {
         m_intakeSubsystem = intakeSubsystem;
 
         m_velocity = IntakeConstants.kPivotRunVelocity.times(
-                        IntakeConstants.kPivotOscillateVelocityCoef);
+                        2 );// IntakeConstants.kPivotOscillateVelocityCoef);
 
         m_acceleration = IntakeConstants.kPivotRunAcceleration.times(
-                    IntakeConstants.kPivotOscillateAccelerationCoef);
+                    2); // IntakeConstants.kPivotOscillateAccelerationCoef);
 
         m_jerk = IntakeConstants.kPivotOscillateJerk;
+
+        m_cycleTimer = new Timer();
         
         addRequirements(intakeSubsystem);
     }
@@ -45,16 +50,18 @@ public class IntakeOscillateCommand extends Command {
             m_jerk
         );
         
+        m_cycleTimer.restart();
     }
 
     @Override 
     public void execute() {
         
-        if (m_intakeSubsystem.pivotInPosition()) {
-           
-            if (!m_hasReachedPosition) {
+        if (true) //m_intakeSubsystem.pivotInPosition()) 
+            {
+
+            if (m_cycleTimer.advanceIfElapsed(1)) {
                 m_hasReachedPosition = true;
-              
+                System.out.println("Oscillating!");
                 if (m_currentTargetPosition == Position.DEPLOYED) {
                     m_currentTargetPosition = Position.INDEXING;
                 } else {
@@ -67,6 +74,8 @@ public class IntakeOscillateCommand extends Command {
                     m_acceleration,
                     m_jerk
                 );
+
+                //m_cycleTimer.restart();   
             }
         } 
         else {

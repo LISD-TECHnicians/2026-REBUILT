@@ -25,6 +25,7 @@ import frc.robot.Constants.RobotConstants.PhysicsConstants;
 import frc.robot.Constants.RobotConstants.CTREConstants;
 import frc.robot.Constants.RobotConstants.ShooterConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.util.AimHelper;
 
 public class ShooterSubsystem extends SubsystemBase{
 
@@ -193,36 +194,26 @@ public class ShooterSubsystem extends SubsystemBase{
         setServo(servoSetValue);
     }
 
-    /*public AngularVelocity getCalculatedSpeed() {
-        m_shootingDistance = getShootingDistance(); 
-        m_shootingDistance = (m_shootingDistance == 0) ? 0.1 : m_shootingDistance; 
-        
-        /* 
-                 may just wish to replace with a constant representing the ideal shooter speed. 
-        
-        
-        //m_discriminant = Math.sqrt((PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2)) / (2 * Math.pow(Math.cos(30), 2) * (m_shootingDistance * Math.tan(30) - PhysicsConstants.kDeltaHeight)))
-        
-        /* = Math.pow(m_tangentialVelocity, 4) - PhysicsConstants.kGravity
-             * (PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2) + 2 * 
-                Math.pow(m_tangentialVelocity, 2) * PhysicsConstants.kDeltaHeight);
-        
-        double heightComponent = m_shootingDistance * Math.tan(30) - PhysicsConstants.kDeltaHeight;
+    public Angle getCalculatedPitch() {
+        m_shootingDistance = 0.0;//getShootingDistance();
+        m_shootingDistance = (m_shootingDistance == 0) ? 0.1 : m_shootingDistance;
+        /*
+                 may just wish to replace with a constant representing the ideal shooter speed.
+        */
+        m_tangentialVelocity = getTangentialVelocity() * ShooterConstants.kEffectiveKineticCoef;
+        m_discriminant = Math.pow(m_tangentialVelocity, 4) - PhysicsConstants.kGravity * (PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2) + 2 *
+        Math.pow(m_tangentialVelocity, 2) * PhysicsConstants.kDeltaHeight);
 
-        if (heightComponent < 0) {
-            return 0.0; // Target unreachable 
+        if (m_discriminant < 0) {
+            return Units.Degrees.of(0.0); // Target unreachable
         }
-        
-        double denominator = Math.pow(Math.cos(30), 2) * heightComponent;
-
-        double exitV = Math.sqrt((PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2)) / denominator);
-
-        return exitV * ShooterConstant.kEffectiveKineticCoef;
-        
-    }*/
+        double tanTheta1 = (Math.pow(m_tangentialVelocity, 2) - Math.sqrt(m_discriminant)) / (PhysicsConstants.kGravity * m_shootingDistance);
+        double tanTheta2 = (Math.pow(m_tangentialVelocity, 2) + Math.sqrt(m_discriminant)) / (PhysicsConstants.kGravity * m_shootingDistance);
+        return Units.Degrees.of(0.0);
+    }
 
     public boolean isIndividualMotorAtSpeed(TalonFX motor) {
-        System.out.println("rads/s" + (motor.getVelocity().getValueAsDouble() * 2 * Math.PI)); // confirm and set constant 
+        //System.out.println("rads/s" + (motor.getVelocity().getValueAsDouble() * 2 * Math.PI)); // confirm and set constant 
         final boolean isVelocityMode = motor.getAppliedControl().equals(m_velocityRequest);
         final AngularVelocity currentAngularVelocity = motor.getVelocity().getValue();
         final AngularVelocity targetAngularVelocity = m_velocityRequest.getVelocityMeasure();
@@ -268,10 +259,6 @@ public class ShooterSubsystem extends SubsystemBase{
     public void reverseIndexerMotor(double setSpeed) {
         m_indexerShooterMotor.setControl(m_shooterVoltageRequest
             .withOutput(CTREConstants.kBatterySupplyVolts.times(-setSpeed)));
-    }
-    
-    public double getShootingDistance() {
-        return 0.0; // Consider getting this value from a command reference to the subsystem.
     }
 
     public double getTangentialVelocity() {

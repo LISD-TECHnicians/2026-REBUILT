@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,18 +35,18 @@ public class IntakePositionCommand extends Command {
                 
             case HOME:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                    (IntakeConstants.kPivotHomeVelocityCoef);  
+                    (1.0);  
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                    (IntakeConstants.kPivotHomeAccelerationCoef);  
+                    (1.0);  
                 m_jerk = IntakeConstants.kPivotHomeJerk;
                 break;
                 
             case INDEXING:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                (IntakeConstants.kPivotIndexingVelocityCoef);  
+                (2.0);  
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                (IntakeConstants.kPivotIndexingAccelerationCoef);
-                m_jerk = IntakeConstants.kPivotIndexingJerk;
+                (2.0);
+                m_jerk = IntakeConstants.kPivotIndexingJerk * 2;
                 break;
                 
             default:
@@ -57,20 +58,16 @@ public class IntakePositionCommand extends Command {
     }
 
     @Override
-    public void initialize() {
-       
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
-        
         m_intakeSubsystem.setPivotPosition(
             m_targetPosition,
             m_velocity,
             m_acceleration,
-            m_jerk
+            m_jerk 
          );
-        
     }
 
     @Override
@@ -80,7 +77,9 @@ public class IntakePositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; //m_intakeSubsystem.pivotInPosition();
+        if (m_intakeSubsystem.pivotInPosition())
+        {System.out.println("Pivot Command ENDED!");}
+        return m_intakeSubsystem.pivotInPosition();
         // test and consider backup plan 
     }
 }

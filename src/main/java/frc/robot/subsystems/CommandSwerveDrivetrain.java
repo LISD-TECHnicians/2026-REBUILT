@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 //import frc.robot.Constants.RobotConstants.PathPlannerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.AimHelper;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -282,6 +283,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          fieldLayout.setRobotPose(getState().Pose);
          SmartDashboard.putData("Field Layout", fieldLayout);
          SmartDashboard.putNumber("Match Time", (int)DriverStation.getMatchTime());
+
+         double shootingDistance = AimHelper.getHubPosition().getDistance(this.getState().Pose.getTranslation());
+        double setSpeed = AimHelper.getCalculatedSpeed(shootingDistance).magnitude();
+        SmartDashboard.putNumber("Shooter Speed", setSpeed);
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
