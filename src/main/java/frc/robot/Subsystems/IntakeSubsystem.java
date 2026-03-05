@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs; 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -108,8 +109,18 @@ public class IntakeSubsystem extends SubsystemBase {
                     / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
                     * (IntakeConstants.kPivotMotorGearReduction)))
                     .withKG(IntakeConstants.kPivotSlot0KG)
+            )
+            .withSoftwareLimitSwitch(
+                new SoftwareLimitSwitchConfigs()
+                    .withForwardSoftLimitEnable(true)
+                    .withReverseSoftLimitEnable(true)
+                    .withForwardSoftLimitThreshold(Units.Rotations.of(-.35)) // home limit 
+                    .withReverseSoftLimitThreshold(Units.Rotations.of(-14.65)) // deployed limit
             );
             m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
+
+        
+
     }       
 
     public void configureMotors() {

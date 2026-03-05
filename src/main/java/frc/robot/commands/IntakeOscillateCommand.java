@@ -12,40 +12,23 @@ public class IntakeOscillateCommand extends Command {
 
     private IntakeSubsystem m_intakeSubsystem;
     private Position m_currentTargetPosition;
-    private AngularVelocity m_velocity;
-    private AngularAcceleration m_acceleration;
-    private double m_jerk;
     private boolean m_hasReachedPosition;
 
     public IntakeOscillateCommand(IntakeSubsystem intakeSubsystem) {
         m_intakeSubsystem = intakeSubsystem;
+        addRequirements(intakeSubsystem);
 
+        /* 
         m_velocity = IntakeConstants.kPivotRunVelocity.times(
                         IntakeConstants.kPivotOscillateVelocityCoef);
-
         m_acceleration = IntakeConstants.kPivotRunAcceleration.times(
                     IntakeConstants.kPivotOscillateAccelerationCoef);
-
         m_jerk = IntakeConstants.kPivotOscillateJerk;
-        
-        addRequirements(intakeSubsystem);
+        */
     }
 
     @Override 
-    public void initialize() {
-         
-        // assuming deployed position will be first
-        m_currentTargetPosition = Position.DEPLOYED;
-        m_hasReachedPosition = false;
-    
-        m_intakeSubsystem.setPivotPosition(
-            m_currentTargetPosition,
-            m_velocity,
-            m_acceleration,
-            m_jerk
-        );
-        
-    }
+    public void initialize() {}
 
     @Override 
     public void execute() {
@@ -77,14 +60,12 @@ public class IntakeOscillateCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-         
         m_intakeSubsystem.setPivotPosition(
             Position.DEPLOYED,
             m_velocity,
             m_acceleration,
             m_jerk
         );
-        
     }
 
     @Override

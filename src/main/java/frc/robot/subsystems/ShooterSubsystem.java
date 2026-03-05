@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -79,12 +80,17 @@ public class ShooterSubsystem extends SubsystemBase{
                     .withSupplyCurrentLimit(Units.Amps.of(120))
                     .withSupplyCurrentLimitEnable(false)
             )
+            .withVoltage(
+                new VoltageConfigs()
+                    .withPeakForwardVoltage(null)
+                    //.Units.Volts.of(11)
+            )
             .withSlot0(
                 new Slot0Configs()
-                .withKP(1)
-                .withKI(0)
+                .withKP(.5)
+                .withKI(2)
                 .withKD(0)
-                .withKV(.10) // test this as maxRPS / 12v
+                .withKV(12 / 96) // 12v / 96 rps --> Max of Krakenx60 
             );
             m_centerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
             m_leftShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
@@ -160,7 +166,7 @@ public class ShooterSubsystem extends SubsystemBase{
         double length1 = B * cosTheta + sqrtTerm; 
         double length2 = B * cosTheta - sqrtTerm; 
         
-        // 
+        // camp applied in the set
         return Units.Meters.of(length2); 
     }
 
@@ -201,7 +207,7 @@ public class ShooterSubsystem extends SubsystemBase{
                 Math.pow(m_tangentialVelocity, 2) * PhysicsConstants.kDeltaHeight);
         
         if (m_discriminant < 0) {
-            return Units.Degrees.of(0.0); // Target unreachable 
+            return Units.Radians.of(0.0); // Target unreachable 
         }
         
         double tanTheta1 = (Math.pow(m_tangentialVelocity, 2) - Math.sqrt(m_discriminant)) 

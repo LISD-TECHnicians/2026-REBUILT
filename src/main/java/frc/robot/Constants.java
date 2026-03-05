@@ -151,7 +151,7 @@ public class Constants {
 
             // Servo motion limits
             public static final LinearVelocity kMaxLinearServoVelocity 
-                = Units.MetersPerSecond.of(0.05); 
+                = Units.MetersPerSecond.of(0.025); 
             public static final Distance kMaxLinearServoDistance 
                 = Units.Meters.of(0.1); 
             

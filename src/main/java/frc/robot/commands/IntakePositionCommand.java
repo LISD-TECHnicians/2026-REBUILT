@@ -63,7 +63,6 @@ public class IntakePositionCommand extends Command {
 
     @Override
     public void execute() {
-        
         m_intakeSubsystem.setPivotPosition(
             m_targetPosition,
             m_velocity,
