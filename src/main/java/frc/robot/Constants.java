@@ -49,7 +49,7 @@ public class Constants {
         public class FeederConstants {
             public static final int kFeederMotorID = 9;
             public static final double kFeederMotorSpeed = -0.6;
-            public static final double kReverseFeederMotorSpeed = 0.6;
+            public static final double kReverseFeederMotorSpeed = 1.0;
         }
 
         
@@ -58,26 +58,25 @@ public class Constants {
             public static final int kIntakeMotorID = 10;
             public static final int kPivotMotorID = 22;
             
-            // Speed coefficients
+            // Inkake Speed coefficient
             public static final double kIntakeSpeedRunCoef = 1.0; 
-            public static final double kPivotSpeedRunCoef = .02; 
             
             // Pivot motor configuration
             public static final double kPivotMotorGearReduction = 1.0; // update based on team's gearbox selection
             
             public static final double kPivotDeployVelocityCoef = .5;
             public static final double kPivotDeployAccelerationCoef = .8;
-            public static final double kPivotDeployJerk = 200;
+            public static final double kPivotDeployJerk = 600;
             //public static final double kPivotDeployVoltage = 0;
             
             public static final double kPivotHomeVelocityCoef = .8;
             public static final double kPivotHomeAccelerationCoef = 1.0;
-            public static final double kPivotHomeJerk = 200; 
+            public static final double kPivotHomeJerk = 600; 
             //public static final double kPivotHomeVoltage = 0;
 
             public static final double kPivotIndexingVelocityCoef = .7;
             public static final double kPivotIndexingAccelerationCoef = .8;
-            public static final double kPivotIndexingJerk = 200;
+            public static final double kPivotIndexingJerk = 600;
             //public static final double kPivotIndexingVoltage = 0;
             
             public static final double kPivotOscillateJerk = 300;
@@ -98,7 +97,10 @@ public class Constants {
             // Tolerances
             public static final Angle kPivotDegreesTolerance 
                 = Units.Degrees.of(5);
-            
+
+            public static final Angle kPivotRotationsTolerance 
+                = Units.Rotations.of(.25);
+
             // Intake motor configuration
             public static final InvertedValue kIntakeInvertedValue 
                 = InvertedValue.CounterClockwise_Positive ;
@@ -106,17 +108,18 @@ public class Constants {
             public static final NeutralModeValue kIntakeNeutralModeValue = 
                 NeutralModeValue.Coast;
                 
-            // Fixed pivot motion 
-            public static final double kPivotAccelrationMotionCoef = .25;
+            // pivot motion 
+            public static final double kPivotSpeedRunCoef = .02; 
+            public static final double kPivotAccelrationMotionCoef = .02;
             
             public static final AngularVelocity kIntakeRunVelocity = 
                 CTREConstants.kKrakenX60MaxRPS.times(kIntakeSpeedRunCoef);
             
             public static final AngularVelocity kPivotRunVelocity = 
-                CTREConstants.kKrakenX60MaxRPS.times(kPivotSpeedRunCoef);
+                Units.RotationsPerSecond.of(160);
         
             public static final AngularAcceleration kPivotRunAcceleration = 
-                CTREConstants.kKrakenX60MaxRadsSecondSecond.times(kPivotAccelrationMotionCoef);
+                Units.RotationsPerSecondPerSecond.of(320);
         }
 
         public class ShooterConstants {
@@ -181,12 +184,38 @@ public class Constants {
             public static final double kRadiusShooterWheel = 0.0508; // 2-inch wheel radius in meters
             public static final double kEffectiveKineticCoef = 0.95; // Energy efficiency coefficient
             
-            // Velocity tolerance
-            public static final AngularVelocity kVelocityTolerance 
-                = Units.RotationsPerSecond.of(5.0);
+            // Shooter Velocities and magnitudes
+            public static final double kMaximumRotationsMagnitude = 91.5; // Tune this Value for adjustments 
+            public static final double kMaximumRotationsAcceptableMagnitude = 1.0; // 100% of available motor speed is used 
+             public static final double kMinimumRotationsAcceptableMagnitude = 59.68;
+
+            public static final AngularVelocity kVelocityMaximumPossibleRot 
+                = Units.RotationsPerSecond.of(kMaximumRotationsMagnitude);
+
+            public static final AngularVelocity kVelocityMaximumPossibleRads
+                = Units.RadiansPerSecond.of(kVelocityMaximumPossibleRot.in(Units.RadiansPerSecond));
+
+            public static final AngularVelocity kVelocityMaximumAcceptableRot 
+                = Units.RotationsPerSecond.of(kVelocityMaximumPossibleRot.times
+                (kMaximumRotationsAcceptableMagnitude).in(
+                Units.RotationsPerSecond));
+            // refactor this
+            public static final AngularVelocity kVelocityMaximumAcceptableRads
+                = Units.RotationsPerSecond.of(kVelocityMaximumAcceptableRot.times
+                (kMaximumRotationsAcceptableMagnitude).in(
+                Units.RadiansPerSecond));
+
+            public static final AngularVelocity kVelocityMimimumAcceptableRads
+                = Units.RotationsPerSecond.of(kVelocityMaximumAcceptableRot.times
+                (kMinimumRotationsAcceptableMagnitude).in(
+                Units.RadiansPerSecond));
+
+            public static final AngularVelocity kVelocityToleranceRot 
+                = Units.RotationsPerSecond.of(4.75); // 10% of max --> tune and test 
+
             
             // Idle speed
-            public static final double kIdleShooterPercentage = .10; // 10% idle speed to keep wheels warm
+            public static final double kIdleShooterPercentage = .15; // 15% idle speed to prevent dead starting at ramp up
         }
 
         public class ClimbConstants {
@@ -200,6 +229,7 @@ public class Constants {
         public class DriverConstants {
             public static final int kDriveControllerPort = 0;
             public static final int kOperaterControllerPort = 1;
+            public static final double kDriveControllerDeadband = .15; 
 
             //public static final double DEADBAND = 0.15; 
             //public static final double DEBOUNCE_TIME = 0.2;
@@ -213,7 +243,7 @@ public class Constants {
         
         // Height difference between shooter and target (in meters)
         // Positive if target is above shooter, negative if below
-        public static final double kDeltaHeight = 2.0; // Adjust based on actual field measurements
+        public static final double kDeltaHeight = 1.448; // Adjust based on actual field measurements
 }
 }
 }

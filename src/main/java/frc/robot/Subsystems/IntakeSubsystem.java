@@ -27,8 +27,8 @@ public class IntakeSubsystem extends SubsystemBase {
 // TODO: Test and refine pivot positions
     public enum Position {
         DEPLOYED(-14.65),
-        INDEXING(-9),
-        HOME(0);
+        INDEXING(-10),
+        HOME(-.35);
 
         private double rotations;
 
@@ -47,15 +47,23 @@ public class IntakeSubsystem extends SubsystemBase {
         = new VelocityVoltage(0);
     private VoltageOut m_intakeVoltageRequest 
         = new VoltageOut(0);
-        
+    
+    /*
     private DynamicMotionMagicVoltage m_pivotDynamicMotionMagicRequest 
             = new DynamicMotionMagicVoltage(
             Units.Rotations.of(0),  
             IntakeConstants.kPivotRunVelocity, 
             IntakeConstants.kPivotRunAcceleration);
-        
+    */
+
     private VoltageOut m_pivotVoltageRequest
         = new VoltageOut(0); 
+
+    DynamicMotionMagicVoltage m_pivotDynamicMotionMagicRequest
+            = new DynamicMotionMagicVoltage(
+                Units.Rotations.of(1),  
+                IntakeConstants.kPivotRunVelocity, 
+                IntakeConstants.kPivotRunAcceleration);
 
     public IntakeSubsystem() {
         m_intakeMotor = new TalonFX(IntakeConstants.kIntakeMotorID, TunerConstants.kCANBus.getName());
@@ -95,6 +103,13 @@ public class IntakeSubsystem extends SubsystemBase {
                     .withSupplyCurrentLimit(Units.Amps.of(70))
                     .withSupplyCurrentLimitEnable(true)
             )
+            .withSoftwareLimitSwitch(
+                new SoftwareLimitSwitchConfigs()
+                .withForwardSoftLimitEnable(true)
+                .withReverseSoftLimitEnable(true)
+                .withForwardSoftLimitThreshold(-.35)
+                .withReverseSoftLimitThreshold(-14.65)
+            )
             .withFeedback(
                 new FeedbackConfigs()
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
@@ -132,20 +147,18 @@ public class IntakeSubsystem extends SubsystemBase {
         AngularVelocity requestVelocity, 
         AngularAcceleration requestAcceleration,
         double requestJerk) {
-        m_pivotDynamicMotionMagicRequest.Velocity 
-            = 80;
-        m_pivotDynamicMotionMagicRequest.Acceleration 
-            = 400;
-        m_pivotDynamicMotionMagicRequest.Jerk 
-            = 4000; // rotations per second cubed
         
         Angle targetRotations = position.positionRotations();
         //Angle targetRotations = Units.Rotations.of(targetDegrees.in(Units.Degrees) / 360.0);
         
-        m_pivotMotor.setControl(
-            m_pivotDynamicMotionMagicRequest
+        m_pivotDynamicMotionMagicRequest
             .withPosition(targetRotations)
-        );
+            .withVelocity(requestVelocity)
+            .withAcceleration(requestAcceleration)
+            .withJerk(requestJerk);
+        
+
+        m_pivotMotor.setControl(m_pivotDynamicMotionMagicRequest);
     }
 
     public void setIntakeMotorSpeed(double setSpeed) {
@@ -183,7 +196,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean pivotInPosition() {
         final Angle currentPosition = m_pivotMotor.getPosition().getValue();
         final Angle targetPosition = m_pivotDynamicMotionMagicRequest.getPositionMeasure();
-        return currentPosition.isNear(Units.Degrees.of(targetPosition.in(Units.Degrees)), IntakeConstants.kPivotDegreesTolerance);
+        return currentPosition.isNear(Units.Rotations.of(targetPosition.in(Units.Rotations)), 
+            IntakeConstants.kPivotRotationsTolerance);
     }
 
     public void stopIntake() {

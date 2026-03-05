@@ -8,7 +8,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeRunCommand extends Command {
     private IntakeSubsystem m_intakeSubsystem;  
 
-
     public IntakeRunCommand(IntakeSubsystem intakeSubsystem) {
         m_intakeSubsystem = intakeSubsystem;
         addRequirements(intakeSubsystem);

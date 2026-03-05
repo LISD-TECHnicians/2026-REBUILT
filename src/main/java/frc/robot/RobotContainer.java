@@ -18,12 +18,13 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -33,6 +34,7 @@ import frc.robot.Constants.RobotConstants.ClimbConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.FeederCommand;
 import frc.robot.commands.IntakeRunCommand;
+import frc.robot.commands.IntakePositionCommand;
 import frc.robot.commands.RotationalAimCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UpdateVisionMeasurementCommand;
@@ -42,6 +44,7 @@ import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.Position;
 import frc.robot.subsystems.ClimbSubsystem;
 
 
@@ -73,8 +76,8 @@ public class RobotContainer {
             .withTargetDirection(Rotation2d.fromDegrees(45));
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
-    private final CommandXboxController driveController = new CommandXboxController(DriverConstants.kDriveControllerPort);
-    private final CommandXboxController operatorController = new CommandXboxController(DriverConstants.kOperaterControllerPort);
+    private final CommandPS4Controller driveController = new CommandPS4Controller(DriverConstants.kDriveControllerPort);
+    private final CommandPS4Controller operatorController = new CommandPS4Controller(DriverConstants.kOperaterControllerPort);
     //private final Trigger brakeTrigger = new Trigger(() -> false);
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     ;
@@ -99,10 +102,11 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * .60) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * .60) // Drive left with negative X (left)
                     .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
+                    .withDeadband(DriverConstants.kDriveControllerDeadband)
+                    )
         );
 
         updateVisionTrigger.whileTrue(updateVisionOdometry);
@@ -113,53 +117,90 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
-        driveController.a().toggleOnTrue(drivetrain.applyRequest(() -> brake));
+        driveController.cross().toggleOnTrue(drivetrain.applyRequest(() -> brake));
             
-        driveController.b().whileTrue(drivetrain.applyRequest(() ->
+        driveController.circle().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
         ));
 
-        driveController.povLeft().whileTrue(drivetrain.applyRequest(() ->  
-            drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * slowSpeedCoef)
-            .withVelocityY(-driveController.getLeftX() * MaxSpeed * slowSpeedCoef)
+        driveController.L1().whileTrue(drivetrain.applyRequest(() ->  
+            drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.90)
+            .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.90)
             .withRotationalRate(-driveController.getRightX())
             ));
 
-        driveController.povDown().whileTrue(drivetrain.applyRequest(() ->  
+        /*driveController.povDown().whileTrue(drivetrain.applyRequest(() ->  
             m_crabWalkRequest.withVelocityX(driveController.getLeftY() * MaxSpeed * slowSpeedCoef)
             .withVelocityY(driveController.getLeftX() * MaxSpeed * slowSpeedCoef)
-            ));
+            ));*/
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driveController.back().and(driveController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driveController.share().and(driveController.triangle()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driveController.share().and(driveController.square()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driveController.touchpad().and(driveController.triangle()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driveController.touchpad().and(driveController.square()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        driveController.leftTrigger().whileTrue(new RotationalAimCommand(drivetrain, () -> driveController.getLeftX(), () -> driveController.getLeftY()));
+        driveController.L2().whileTrue(new RotationalAimCommand(drivetrain, () -> driveController.getLeftX() * -1, () -> driveController.getLeftY() * -1));
         //driveController.povDown().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
 
                 // Reset the field-centric heading on left bumper press.
-        driveController.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        driveController.povLeft().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         
                 
         drivetrain.registerTelemetry(logger::telemeterize);
-        driveController.rightTrigger().whileTrue(new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed));
+        driveController.triangle().whileTrue(new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed)); // Not needed, button can be switched according to driver's preferences
+        driveController.circle().whileTrue(new FeederCommand(m_feederSubsystem, FeederConstants.kReverseFeederMotorSpeed));
         // Intended to turn the feeder on after the fly-wheels have been on for a second
-        driveController.y().whileTrue(new ShooterCommand(m_shooterSubsystem));
-        driveController.x().whileTrue(new ShooterCommand(m_shooterSubsystem)); // Intended to be the reverse indexer binding
-        driveController.rightBumper().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
-        driveController.b().whileTrue(new ClimbCommand(m_climbSubsystem, 0.5));
-    //  driveController.b().whileTrue(new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
-    //  driveController.a().whileTrue(new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
-    //  driveController.y().whileTrue(new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
-        
+       driveController.R2().whileTrue(
+    Commands.parallel(
+        new ShooterCommand(m_shooterSubsystem, drivetrain),
+        Commands.sequence(
+            // Wait until the condition is met WITHOUT ending the whole group
+            Commands.waitUntil(m_shooterSubsystem::shooterAtFireSpeed),
+            new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed))));
+
+        driveController.R1().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
+        driveController.povUp().whileTrue(new ClimbCommand(m_climbSubsystem, -0.5));
+        driveController.povDown().whileTrue(new ClimbCommand(m_climbSubsystem, 0.5));
+        driveController.povLeft().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
+        driveController.povRight().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
+        driveController.touchpad().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
+        driveController.PS().whileTrue(
+            Commands.parallel(
+                new IntakeRunCommand(m_intakeSubsystem)
+                .beforeStarting(
+                    Commands.sequence(
+                        new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED),
+                        Commands.waitUntil(() -> m_intakeSubsystem.pivotInPosition()),
+                        new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING),
+                        Commands.waitUntil(() -> m_intakeSubsystem.pivotInPosition())
+                    )
+                    .repeatedly()
+                )
+                .finallyDo(() -> {
+                    m_intakeSubsystem.stopIntake();
+                    m_intakeSubsystem.stopPivot();
+                })
+            )
+        );
     }
         
 
     public void registerNamedCommands() {
         NamedCommands.registerCommand("Brake", drivetrain.applyRequest(() -> brake));
+        NamedCommands.registerCommand("Intake", new IntakeRunCommand(m_intakeSubsystem));
+        NamedCommands.registerCommand("Extend Climb", new ClimbCommand(m_climbSubsystem, -0.5));
+        NamedCommands.registerCommand("Retract Climb", new ClimbCommand(m_climbSubsystem, 0.5));
+        NamedCommands.registerCommand("Auto Aim at Outpost", new RotationalAimCommand(drivetrain, () -> driveController.getLeftX() * -1, () -> driveController.getLeftY() * -1));
+        NamedCommands.registerCommand("Shoot", 
+            Commands.parallel(
+            new ShooterCommand(m_shooterSubsystem, drivetrain),
+            Commands.sequence(
+            // Wait until the condition is met WITHOUT ending the whole group
+            Commands.waitUntil(m_shooterSubsystem::shooterAtFireSpeed),
+            new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed))));
+        NamedCommands.registerCommand("Pivot Indexing", new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
     }
 
             public Command getAutonomousCommand() {

@@ -69,7 +69,6 @@ public class IntakePositionCommand extends Command {
             m_acceleration,
             m_jerk
          );
-        
     }
 
     @Override

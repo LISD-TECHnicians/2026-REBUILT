@@ -21,7 +21,7 @@ public class FeederCommand extends Command{
 
     @Override
     public void execute() {
-       m_feederSubsystem.setIndexerMotorSpeed(FeederConstants.kFeederMotorSpeed);
+       m_feederSubsystem.setIndexerMotorSpeed(setSpeed);
     }
 
     @Override
