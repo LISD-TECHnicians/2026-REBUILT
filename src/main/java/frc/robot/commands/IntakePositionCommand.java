@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,10 +42,10 @@ public class IntakePositionCommand extends Command {
                 
             case INDEXING:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                (2.0);  
+                (15.0);  
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                (2.0);
-                m_jerk = IntakeConstants.kPivotIndexingJerk * 2;
+                (15.0);
+                m_jerk = IntakeConstants.kPivotIndexingJerk * 1500;
                 break;
                 
             default:

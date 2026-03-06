@@ -1,11 +1,11 @@
 package frc.robot.commands;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.math.filter.MedianFilter;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.Constants.RobotConstants.ShooterConstants;
-import frc.robot.Constants.RobotConstants.PhysicsConstants;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -16,30 +16,30 @@ public class ShooterCommand extends Command{
     private ShooterSubsystem m_shooterSubsystem;
     private CommandSwerveDrivetrain m_driveSubsystem;
     private boolean m_shooterReadyFire = false;
+    private final MedianFilter m_distanceFilter;
 
     public ShooterCommand (ShooterSubsystem shooterSubsystem, CommandSwerveDrivetrain driveSubsystem){
         m_shooterSubsystem = shooterSubsystem;
         m_driveSubsystem = driveSubsystem;
+        m_distanceFilter = new MedianFilter(10);
         addRequirements(m_shooterSubsystem);
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
-        // TODO: test, refine values and set to using si units -> rads/s
-       
-        double shootingDistance = AimHelper.getHubPosition().getDistance(m_driveSubsystem.getState().Pose.getTranslation());
+       double shootingDistance = AimHelper.getHubPosition().getDistance(m_driveSubsystem.getState().Pose.getTranslation());
+       shootingDistance = m_distanceFilter.calculate(shootingDistance);
+       System.out.println("distance: "  + shootingDistance);
 
        double setSpeed = AimHelper.getCalculatedSpeed(shootingDistance).magnitude();
-       /*if (setSpeed < ShooterConstants.kVelocityMaximumAcceptableRads.in(Units.RadiansPerSecond)) {
-        setSpeed = ShooterConstants.kVelocityMaximumAcceptableRads.in(Units.RadiansPerSecond);
-       }*/
-       System.out.println("Rad/s --> " + setSpeed);
-       m_shooterSubsystem.setShooterRadiansSecond(setSpeed); 
+       m_shooterSubsystem.energize(shootingDistance);
+       
+       //m_shooterSubsystem.testServo(.70); // 
+       //m_shooterSubsystem.setShooterRadiansSecond(450); // 385 rads/s
+       
        m_shooterReadyFire = m_shooterSubsystem.shooterAtFireSpeed();
        if (m_shooterReadyFire) {m_shooterSubsystem.setIndexerMotorPercentage(1.0);}
        else {m_shooterSubsystem.setIndexerMotorPercentage(0.0);}

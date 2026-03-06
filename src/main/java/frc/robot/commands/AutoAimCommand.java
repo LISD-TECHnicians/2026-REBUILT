@@ -20,10 +20,10 @@ import frc.robot.util.JoystickProfileHelper;
 import frc.robot.util.ManualDriveInput;
 import frc.robot.generated.TunerConstants;
 
-public class RotationalAimCommand extends Command {
+public class AutoAimCommand extends Command {
     private Translation2d hubPosition;
     private Rotation2d desiredRotation;
-    private final Angle m_allowedDeviation = Units.Degrees.of(5);
+    private final Angle m_allowedDeviation  = Units.Degrees.of(5);
     private final CommandSwerveDrivetrain m_commandSwerveDrivetrain;
     private final SwerveRequest.FieldCentricFacingAngle m_fieldCentricFacingAngle = 
         new SwerveRequest.FieldCentricFacingAngle()
@@ -34,15 +34,8 @@ public class RotationalAimCommand extends Command {
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
             .withHeadingPID(5, 0, 0); // TODO: test and tune this.
 
-    private final JoystickProfileHelper m_profileHelper;
-
-    public RotationalAimCommand(
-        CommandSwerveDrivetrain swerveDrivetrain,
-        DoubleSupplier yValue,
-        DoubleSupplier xValue) 
-    {
+    public AutoAimCommand(CommandSwerveDrivetrain swerveDrivetrain) {
         this.m_commandSwerveDrivetrain = swerveDrivetrain;
-        this.m_profileHelper = new JoystickProfileHelper(yValue, xValue);
         addRequirements(swerveDrivetrain);
     }
 
@@ -53,16 +46,13 @@ public class RotationalAimCommand extends Command {
     public void execute() {
         hubPosition = AimHelper.getHubPosition();
         desiredRotation = AimHelper.getRotationToHub
-            (m_commandSwerveDrivetrain.getState().Pose, 
-            hubPosition, 
-            desiredRotation);
-        final ManualDriveInput input = m_profileHelper.getSmoothedInput();
+        (m_commandSwerveDrivetrain.getState().Pose, 
+         hubPosition, 
+         desiredRotation);
         m_commandSwerveDrivetrain.setControl
         (
             m_fieldCentricFacingAngle
-                .withVelocityX(TunerConstants.kSpeedAt12Volts.times(input.forward))
-                .withVelocityY(TunerConstants.kSpeedAt12Volts.times(input.left))
-                .withTargetDirection(desiredRotation.plus(Rotation2d.fromDegrees(-5)))
+                .withTargetDirection(desiredRotation)
         );
     }           
 

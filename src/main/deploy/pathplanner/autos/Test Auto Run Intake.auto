@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Auto Path (Over Bump 1)"
+            "pathName": "Test Path No Movement"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Center Shooter Path (Refilling)"
+            "waitTime": 1.0
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center Auto Path (Over Bump 2 & Score)"
+            "name": "Intake"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Comp Autos",
+  "folder": "Test Autos",
   "choreoAuto": false
 }

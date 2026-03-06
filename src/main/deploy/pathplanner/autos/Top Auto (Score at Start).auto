@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path (Refill at Start)"
+            "pathName": "Top Auto Path 1.25 (Refill at Start)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path (Score at Start)"
+            "pathName": "Top Auto Path 1.50 (Score at Start)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path (Over Bump 1 ALT)"
+            "pathName": "Top Auto Path 1.75 (Over Bump 1 ALT)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path (Refilling)"
+            "pathName": "Top Auto Path 2 (Refilling)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path (Over Bump 2 & Score)"
+            "pathName": "Top Auto Path 3 (Over Bump 2 & Score)"
           }
         }
       ]

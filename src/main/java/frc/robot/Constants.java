@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.config.RobotConfig;
 
 public class Constants {
     public class RobotConstants {
@@ -130,8 +129,8 @@ public class Constants {
             public static final int kShooterMotorIndexerID = 15;
             
             // PWM Channels for servos
-            public static final int kPWMChannelLH = 0; // Left Hood servo
-            public static final int kPWMChannelRH = 1; // Right Hood servo
+            public static final int kPWMChannelLH = 8; // Left Hood servo
+            public static final int kPWMChannelRH = 9; // Right Hood servo
             
             // Motor configuration
             public static final InvertedValue kShooterInvertedValue 
@@ -141,16 +140,17 @@ public class Constants {
             
             // Servo Sets in % values [0 - 1.0]
             public static final double kServoInitPosition = 0.5; // Initial servo position (0.0 - 1.0)
-            public static final double kServoMinSet = 0.0;
-            public static final double kServoMaxSet = 1.0;
+            public static final double kServoMinSet = 0.3;
+            public static final double kServoMaxSet = 0.85;
             public static final double kServoPositionTolerance = 0.01; // Tolerance for servo position
+            public static final double kLeftServoOffset = 0.1;
             
             // Shooter Motor Sets in % values
             public static final double kMinShooterMotorPercentage = .20;
-
+            public static final double kMaxShooterRadsPerSecondsMag = 550;
             // Shooter Motor sets it max rads per seconds
             public static final AngularVelocity kMaxShooterRadsPerSeconds
-                = Units.RadiansPerSecond.of(550);
+                = Units.RadiansPerSecond.of(kMaxShooterRadsPerSecondsMag);
 
             // Servo motion limits
             public static final LinearVelocity kMaxLinearServoVelocity 
@@ -174,15 +174,15 @@ public class Constants {
             
             // Linear actuator range (in meters) - Get real measurements here!
             public static final Distance kActuatorMinLength 
-                = Units.Meters.of(0.10); 
+                = Units.Meters.of(0.1742); 
             public static final Distance kActuatorMaxLength 
-                = Units.Meters.of(0.20); 
+                = Units.Meters.of(0.252); 
             public static final Distance kActuatorOffset 
                 = Units.Meters.of(0.0); 
 
             // Shooter physics
             public static final double kRadiusShooterWheel = 0.0508; // 2-inch wheel radius in meters
-            public static final double kEffectiveKineticCoef = 0.95; // Energy efficiency coefficient
+            public static final double kEffectiveKineticCoef =  1.0; // Energy efficiency coefficient
             
             // Shooter Velocities and magnitudes
             public static final double kMaximumRotationsMagnitude = 91.5; // Tune this Value for adjustments 
@@ -220,6 +220,8 @@ public class Constants {
 
         public class ClimbConstants {
             public static final int kClimbMotorID = 16;
+            public static final double kExtendClimbSpeed = -0.5;
+            public static final double kRetractClimbSpeed = 0.5;
         }
     
         public class PathPlannerConstants {

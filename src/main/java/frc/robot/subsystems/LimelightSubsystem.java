@@ -57,6 +57,10 @@ public class LimelightSubsystem extends SubsystemBase{
         return Optional.of(new Measurement(poseEstimate_MegaTag2, standardDeviations));
     }*/
 
+    public String getLLName() {
+        return m_limelightName;
+    }
+
     public double getRawTimeStamp() {
         return Timer.getFPGATimestamp();
     }

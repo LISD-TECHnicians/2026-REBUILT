@@ -123,7 +123,8 @@ public class IntakeSubsystem extends SubsystemBase {
                     .withKV(CTREConstants.kBatterySupplyVolts.in(Units.Volts)
                     / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
                     * (IntakeConstants.kPivotMotorGearReduction)))
-                    .withKG(IntakeConstants.kPivotSlot0KG)
+                    .withKG(.1)
+                    .withKA(.25)
             );
             m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
     }       
