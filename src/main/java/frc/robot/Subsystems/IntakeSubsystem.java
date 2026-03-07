@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 // TODO: Test and refine pivot positions
     public enum Position {
         DEPLOYED(-14.65),
-        INDEXING(-10),
+        INDEXING(-8),
         HOME(-.35);
 
         private double rotations;
@@ -123,8 +123,8 @@ public class IntakeSubsystem extends SubsystemBase {
                     .withKV(CTREConstants.kBatterySupplyVolts.in(Units.Volts)
                     / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
                     * (IntakeConstants.kPivotMotorGearReduction)))
-                    .withKG(.1)
-                    .withKA(.25)
+                    .withKG(.3)
+                    .withKA(.07)
             );
             m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
     }       

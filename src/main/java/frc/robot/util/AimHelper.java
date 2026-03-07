@@ -24,16 +24,21 @@ public class AimHelper {
         Pose2d robotPose,
         Translation2d desiredHubPosition,
         Rotation2d operatorForwardPosition) {
+        var alliance = DriverStation.getAlliance();
+        double degreeOffset = 0; 
         final Translation2d robotPosition = robotPose.getTranslation();
         final Rotation2d hubRotationBlueAlliance 
             = desiredHubPosition.minus(robotPosition).getAngle();
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            degreeOffset = 180;
+        }
         final Rotation2d hubRotationOperator 
-            = hubRotationBlueAlliance.rotateBy(Rotation2d.fromDegrees(0));
+            = hubRotationBlueAlliance.rotateBy(Rotation2d.fromDegrees(degreeOffset));
         return hubRotationOperator;
     }
 
     public static Translation2d getHubPosition() {
-        final Optional<Alliance> alliance = DriverStation.getAlliance();
+        var alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
             return FieldConstants.kBlueHubTranslation2d;
         }

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -46,9 +48,10 @@ public class AutoAimCommand extends Command {
     public void execute() {
         hubPosition = AimHelper.getHubPosition();
         desiredRotation = AimHelper.getRotationToHub
-        (m_commandSwerveDrivetrain.getState().Pose, 
-         hubPosition, 
-         desiredRotation);
+            (m_commandSwerveDrivetrain.getState().Pose, 
+            hubPosition, 
+            desiredRotation);
+        
         m_commandSwerveDrivetrain.setControl
         (
             m_fieldCentricFacingAngle

@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Pivot Deployed"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -18,12 +24,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Bottom Auto Path 2 (Fill)"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Feeding"
                 }
               },
               {

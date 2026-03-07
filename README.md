@@ -46,29 +46,29 @@ To maintain a clean working repository, all contributing developers **must** adh
 ---
 | Input | Functionality |
 | :--- | :--- |
-| **A Button** | |
-| **B Button** | |
-| **X Button** | |
-| **Y Button** | |
-| **Left Bumper (LB)** | |
-| **Right Bumper (RB)** | |
-| **Left Trigger (LT)** | |
-| **Right Trigger (RT)** | |
-| **Back Button** | |
-| **Start Button** | |
+| **A Button** |Brake|
+| **B Button** |Reverse Feeder, Shooter, & Indexer|
+| **X Button** |Oscillate Pivot|
+| **Y Button** |Run Feeder Independently|
+| **Left Bumper (LB)** |Boost|
+| **Right Bumper (RB)** |Run Intake|
+| **Left Trigger (LT)** |Auto Aim at Hub|
+| **Right Trigger (RT)** |Shoot|
+| **Back Button** |Reset Odometry|
+| **Start Button** |Pivot Home Position|
 | **Left Stick Click (L3)**| |
 | **Right Stick Click (R3)**| |
-| **Left Stick (X/Y)** | |
-| **Right Stick (X/Y)** | |
+| **Left Stick (X/Y)** |Drive/Strafe|
+| **Right Stick (X/Y)** |Rotate|
 | **D-Pad (Up/Down)** | |
-| **D-Pad (Left/Right)**| |
+| **D-Pad (Left/Right)**|Pivot Deployed Position/Pivot Indexing Position|
 
 **Operator** XBox 360
 ---
 | Input | Functionality |
 | :--- | :--- |
 | **A Button** | |
-| **B Button** | |
+| **B Button** |Reverse Intake|
 | **X Button** | |
 | **Y Button** | |
 | **Left Bumper (LB)** | |
@@ -81,7 +81,7 @@ To maintain a clean working repository, all contributing developers **must** adh
 | **Right Stick Click (R3)**| |
 | **Left Stick (X/Y)** | |
 | **Right Stick (X/Y)** | |
-| **D-Pad (Up/Down)** | |
+| **D-Pad (Up/Down)** |Extend Climb/Retract Climb|
 | **D-Pad (Left/Right)**| |
 
 ## Setup & Installation for Windows Machines

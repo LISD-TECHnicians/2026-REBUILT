@@ -5,109 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Pivot Deployed"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Test Path No Movement"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Feeding"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.5
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Deployed"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.5
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Oscillate"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 2.5
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Home"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.5
-                }
-              }
-            ]
           }
         }
       ]

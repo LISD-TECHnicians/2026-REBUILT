@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -56,6 +58,11 @@ public class RotationalAimCommand extends Command {
             (m_commandSwerveDrivetrain.getState().Pose, 
             hubPosition, 
             desiredRotation);
+
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            desiredRotation.rotateBy(Rotation2d.fromRotations(0.5));
+        }
+    
         final ManualDriveInput input = m_profileHelper.getSmoothedInput();
         m_commandSwerveDrivetrain.setControl
         (

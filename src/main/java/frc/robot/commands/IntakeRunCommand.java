@@ -6,12 +6,15 @@ import frc.robot.Constants.RobotConstants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeRunCommand extends Command {
-    private IntakeSubsystem m_intakeSubsystem;  
+    private IntakeSubsystem m_intakeSubsystem;
+    private final double setSpeed;
 
 
-    public IntakeRunCommand(IntakeSubsystem intakeSubsystem) {
+
+    public IntakeRunCommand(IntakeSubsystem intakeSubsystem, double speed) {
         m_intakeSubsystem = intakeSubsystem;
-        addRequirements(intakeSubsystem);
+        setSpeed = speed;
+        addRequirements(m_intakeSubsystem);
     }
 
     @Override
@@ -19,7 +22,7 @@ public class IntakeRunCommand extends Command {
 
     @Override
     public void execute() {
-       m_intakeSubsystem.setIntakeMotorSpeed(-IntakeConstants.kIntakeSpeedRunCoef);
+       m_intakeSubsystem.setIntakeMotorSpeed(setSpeed);
     }
 
     @Override

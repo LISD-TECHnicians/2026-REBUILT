@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.RobotConstants.DriverConstants;
 import frc.robot.Constants.RobotConstants.FeederConstants;
+import frc.robot.Constants.RobotConstants.IntakeConstants;
 import frc.robot.Constants.RobotConstants.ClimbConstants;
 import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.ClimbCommand;
@@ -50,7 +51,7 @@ public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    private double slowSpeedCoef = .60;
+    private double slowSpeedCoef = .75;
     //private double slowSpeedCoefRotational = .60;
     
     private double speedCrabWalkCoef = .75;
@@ -92,9 +93,10 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
 
+        registerNamedCommands();
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        registerNamedCommands();
+        
     }
 
     private void configureBindings() {
@@ -105,7 +107,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * slowSpeedCoef) // Drive forward with negative Y (forward)
                     .withVelocityY(-driveController.getLeftX() * MaxSpeed * slowSpeedCoef) // Drive left with negative X (left)
-                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate * 1.20) // Drive counterclockwise with negative X (left)
                     .withDeadband(DriverConstants.kDriveControllerDeadband)
                     )
         );
@@ -140,7 +142,7 @@ public class RobotContainer {
         driveController.leftTrigger().whileTrue(new RotationalAimCommand(drivetrain, () -> driveController.getLeftX() * -1, () -> driveController.getLeftY() * -1));
 
                 // Reset the field-centric heading on left bumper press.
-        driveController.povLeft().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        driveController.back().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         
                 
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -158,15 +160,16 @@ public class RobotContainer {
             Commands.waitUntil(m_shooterSubsystem::shooterAtFireSpeed),
             new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed))));
 
-        driveController.rightBumper().whileTrue(new IntakeRunCommand(m_intakeSubsystem));
+        driveController.rightBumper().whileTrue(new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef));
+        operatorController.b().whileTrue(new IntakeRunCommand(m_intakeSubsystem, IntakeConstants.kIntakeSpeedRunCoef));
         operatorController.povUp().whileTrue(new ClimbCommand(m_climbSubsystem, ClimbConstants.kExtendClimbSpeed));
         operatorController.povDown().whileTrue(new ClimbCommand(m_climbSubsystem, ClimbConstants.kRetractClimbSpeed));
-        driveController.povLeft().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
-        driveController.povRight().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
+        driveController.povRight().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
+        driveController.povLeft().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
         driveController.start().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
         driveController.x().whileTrue(
             Commands.parallel(
-                new IntakeRunCommand(m_intakeSubsystem) 
+                new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef) 
                 .beforeStarting(  // verify the correction for intake motor running.
                     Commands.sequence(
                         new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED),
@@ -186,11 +189,11 @@ public class RobotContainer {
         
 
     public void registerNamedCommands() {
-        NamedCommands.registerCommand("Brake", drivetrain.applyRequest(() -> brake));
-        NamedCommands.registerCommand("Intake", new IntakeRunCommand(m_intakeSubsystem));
-        NamedCommands.registerCommand("Extend Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kExtendClimbSpeed));
+        //NamedCommands.registerCommand("Brake", drivetrain.applyRequest(() -> brake));
+        //NamedCommands.registerCommand("Intake", new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef));
+        /*NamedCommands.registerCommand("Extend Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kExtendClimbSpeed));
         NamedCommands.registerCommand("Retract Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kRetractClimbSpeed));
-        NamedCommands.registerCommand("Auto Aim at Hub", new AutoAimCommand(drivetrain));
+        NamedCommands.registerCommand("Auto Aim at Hub", new AutoAimCommand(drivetrain)); */
         NamedCommands.registerCommand("Shoot", 
             Commands.parallel(
             new ShooterCommand(m_shooterSubsystem, drivetrain),
@@ -198,12 +201,13 @@ public class RobotContainer {
             // Wait until the condition is met WITHOUT ending the whole group
             Commands.waitUntil(m_shooterSubsystem::shooterAtFireSpeed),
             new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed))));
-        NamedCommands.registerCommand("Pivot Feeding", new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
-        NamedCommands.registerCommand("Pivot Home", new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
-        NamedCommands.registerCommand("Pivot Deployed", new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
-        NamedCommands.registerCommand("Pivot Oscillate", 
+    
+        //NamedCommands.registerCommand("Pivot Feeding", new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
+        //NamedCommands.registerCommand("Pivot Home", new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
+        //NamedCommands.registerCommand("Pivot Deployed", new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
+        /*NamedCommands.registerCommand("Pivot Oscillate", 
             Commands.parallel( //Heavily Experimental, be ready on E-Stop when testing
-                new IntakeRunCommand(m_intakeSubsystem) 
+                new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef) 
                 .beforeStarting(  // verify the correction for intake motor running.
                     Commands.sequence(
                         new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED),
@@ -218,7 +222,7 @@ public class RobotContainer {
                     m_intakeSubsystem.stopPivot();
                 })
             ));
-    }
+    }*/}
 
             public Command getAutonomousCommand() {
                 try{

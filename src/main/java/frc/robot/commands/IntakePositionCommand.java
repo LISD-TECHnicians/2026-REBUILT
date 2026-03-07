@@ -18,7 +18,7 @@ public class IntakePositionCommand extends Command {
     public IntakePositionCommand(IntakeSubsystem intakeSubsystem, Position targetPosition) {
         m_intakeSubsystem = intakeSubsystem;
         m_targetPosition = targetPosition;
-        addRequirements(intakeSubsystem);
+        addRequirements(m_intakeSubsystem);
         
         configureMotionParameters();
     }
@@ -34,18 +34,18 @@ public class IntakePositionCommand extends Command {
                 
             case HOME:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                    (1.0);  
+                    (2.0); // Was 1.0
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                    (1.0);  
+                    (2.0); // Was 1.0
                 m_jerk = IntakeConstants.kPivotHomeJerk;
                 break;
                 
             case INDEXING:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                (15.0);  
+                (2.0); // Was 15.0 
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                (15.0);
-                m_jerk = IntakeConstants.kPivotIndexingJerk * 1500;
+                (2.0); // Was 15.0
+                m_jerk = IntakeConstants.kPivotIndexingJerk * 1;  // originally multiplied by 1500
                 break;
                 
             default:
@@ -76,8 +76,6 @@ public class IntakePositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        if (m_intakeSubsystem.pivotInPosition())
-        {System.out.println("Pivot Command ENDED!");}
         return m_intakeSubsystem.pivotInPosition();
         // test and consider backup plan 
     }

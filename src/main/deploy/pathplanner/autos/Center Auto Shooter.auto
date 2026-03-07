@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path No Movement"
+            "pathName": "Center Shot Path"
           }
         },
         {
@@ -29,7 +29,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 6.0
                 }
               }
             ]
@@ -38,7 +38,7 @@
       ]
     }
   },
-  "resetOdom": true,
-  "folder": "Test Autos",
+  "resetOdom": false,
+  "folder": "Comp Autos",
   "choreoAuto": false
 }
