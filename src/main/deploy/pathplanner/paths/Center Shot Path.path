@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.304021892849703,
+        "x": 2.590327262744667,
         "y": 4.005766666666666
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Path Starting Point"
     },
     {
       "anchor": {
         "x": 2.124,
-        "y": 4.005766666666666
+        "y": 4.006
       },
       "prevControl": {
-        "x": 3.836277777777778,
-        "y": 4.015511111111111
+        "x": 3.829277777777778,
+        "y": 4.006
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Shooting Point"
     }
   ],
   "rotationTargets": [],

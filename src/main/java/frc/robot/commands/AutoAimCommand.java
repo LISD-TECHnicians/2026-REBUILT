@@ -38,7 +38,7 @@ public class AutoAimCommand extends Command {
 
     public AutoAimCommand(CommandSwerveDrivetrain swerveDrivetrain) {
         this.m_commandSwerveDrivetrain = swerveDrivetrain;
-        addRequirements(swerveDrivetrain);
+        //addRequirements(swerveDrivetrain);
     }
 
     @Override
@@ -52,10 +52,15 @@ public class AutoAimCommand extends Command {
             hubPosition, 
             desiredRotation);
         
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            desiredRotation.rotateBy(Rotation2d.fromRotations(0.5));
+        }
+
+
         m_commandSwerveDrivetrain.setControl
         (
             m_fieldCentricFacingAngle
-                .withTargetDirection(desiredRotation)
+                .withTargetDirection(desiredRotation.plus(Rotation2d.fromDegrees(-5)))
         );
     }           
 

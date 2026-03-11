@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.037233333333333,
-        "y": 0.7998444444444439
+        "x": 2.2869111111111113,
+        "y": 0.6634222222222217
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bottom Starting Point"
     },
     {
       "anchor": {
-        "x": 2.2479333333333336,
-        "y": 0.887544444444444
+        "x": 2.959277777777778,
+        "y": 2.329722222222222
       },
       "prevControl": {
-        "x": 4.031166666666665,
-        "y": 0.4587888888888869
+        "x": 2.7936222222222225,
+        "y": 1.579399999999998
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bottom Bump Start"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 43.614
+    "rotation": 42.341115605756606
   },
   "reversed": false,
   "folder": "Bottom Shooter Collection",

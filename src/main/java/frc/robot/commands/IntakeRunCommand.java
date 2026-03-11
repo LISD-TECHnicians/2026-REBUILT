@@ -10,11 +10,10 @@ public class IntakeRunCommand extends Command {
     private final double setSpeed;
 
 
-
     public IntakeRunCommand(IntakeSubsystem intakeSubsystem, double speed) {
         m_intakeSubsystem = intakeSubsystem;
         setSpeed = speed;
-        addRequirements(m_intakeSubsystem);
+        //addRequirements(m_intakeSubsystem);
     }
 
     @Override

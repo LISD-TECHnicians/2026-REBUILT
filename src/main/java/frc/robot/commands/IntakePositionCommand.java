@@ -18,7 +18,7 @@ public class IntakePositionCommand extends Command {
     public IntakePositionCommand(IntakeSubsystem intakeSubsystem, Position targetPosition) {
         m_intakeSubsystem = intakeSubsystem;
         m_targetPosition = targetPosition;
-        addRequirements(m_intakeSubsystem);
+        // addRequirements(m_intakeSubsystem);
         
         configureMotionParameters();
     }

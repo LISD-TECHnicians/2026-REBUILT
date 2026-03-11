@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8618333333333332,
-        "y": 5.486922222222222
+        "x": 2.959277777777778,
+        "y": 2.329722222222222
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.245544444444445,
-        "y": 5.59411111111111
+        "x": 4.391711111111111,
+        "y": 2.4953777777777773
       },
       "isLocked": false,
-      "linkedName": "Top Bump Start"
+      "linkedName": "Bottom Bump Start"
     },
     {
       "anchor": {
-        "x": 6.262644444444445,
-        "y": 5.8767
+        "x": 6.165200000000001,
+        "y": 2.2517666666666663
       },
       "prevControl": {
-        "x": 4.674300000000001,
-        "y": 5.603855555555556
+        "x": 4.966633333333334,
+        "y": 2.43691111111111
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bottom Bump Stop"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -45.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -46,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": -45.0
+    "velocity": 0,
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": "Top Shooter Collection",
+  "folder": "Bottom Shooter Collection",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -44.18849931628814
+    "rotation": 42.341115605756606
   },
   "useDefaultConstraints": true
 }

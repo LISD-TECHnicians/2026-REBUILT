@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.245544444444445,
-        "y": 5.59411111111111
+        "x": 3.923977777772567,
+        "y": 5.457688888884848
       },
       "isLocked": false,
       "linkedName": "Top Bump Start"
     },
     {
       "anchor": {
-        "x": 6.262644444444445,
-        "y": 5.8767
+        "x": 6.418555555555556,
+        "y": 5.311522222222222
       },
       "prevControl": {
-        "x": 4.674300000000001,
-        "y": 5.603855555555556
+        "x": 5.375900000000001,
+        "y": 5.6136
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.25,
       "rotationDegrees": -45.0
     }
   ],
@@ -46,7 +46,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": -45.0
   },
   "reversed": false,

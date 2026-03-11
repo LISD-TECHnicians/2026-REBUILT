@@ -7,32 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path No Movement"
+            "pathName": "Center Shot Path"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Aim at Hub"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 30.0
-                }
-              }
-            ]
+            "waitTime": 1.0
           }
         },
         {
@@ -48,16 +29,28 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 6.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Path Shoot (EX)"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Test Autos",
+  "folder": "Comp Autos",
   "choreoAuto": false
 }

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7546444444444442,
-        "y": 7.338366666666666
+        "x": 2.6474555555555552,
+        "y": 7.387088888888888
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.7412222222222224,
-        "y": 7.211688888888889
+        "x": 2.8618333333333332,
+        "y": 5.486922222222222
       },
       "prevControl": {
-        "x": 3.6024111111111123,
-        "y": 7.377344444444445
+        "x": 3.2418666666666667,
+        "y": 6.695233333333333
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Bump Start"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -48.138882633883576
+    "rotation": -44.18849931628814
   },
   "reversed": false,
   "folder": "Top Shooter Collection",

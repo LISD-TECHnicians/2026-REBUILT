@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path No Movement"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Bottom Outpost Path"
           }
         },
         {
@@ -23,16 +17,28 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Aim at Hub"
+                  "name": "Pivot Deployed"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 30.0
+                  "waitTime": 1.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Shoot After Outpost"
           }
         },
         {
@@ -48,16 +54,28 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 7.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Shoot Path (EX)"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Test Autos",
+  "folder": "Comp Autos",
   "choreoAuto": false
 }

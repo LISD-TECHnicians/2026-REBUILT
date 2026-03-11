@@ -168,32 +168,31 @@ public class RobotContainer {
         driveController.povLeft().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
         driveController.start().onTrue(new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
         driveController.x().whileTrue(
-            Commands.parallel(
-                new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef) 
-                .beforeStarting(  // verify the correction for intake motor running.
-                    Commands.sequence(
-                        new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED),
-                        Commands.waitUntil(() -> m_intakeSubsystem.pivotInPosition()),
-                        new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING),
-                        Commands.waitUntil(() -> m_intakeSubsystem.pivotInPosition())
-                    )
-                    .repeatedly()
-                )
-                .finallyDo(() -> {
-                    m_intakeSubsystem.stopIntake();
-                    m_intakeSubsystem.stopPivot();
-                })
-            )
-        );
+        Commands.sequence(
+            new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED),
+            Commands.waitUntil(() -> m_intakeSubsystem.pivotInPosition()),
+            Commands.waitSeconds(0.1), // testing a wait to prevent instant change in pivot position state.
+
+            new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING),
+            Commands.waitUntil(() -> m_intakeSubsystem.pivotInPosition()),
+            Commands.waitSeconds(0.1)  
+        )
+        .repeatedly()
+        .finallyDo(() -> {
+            m_intakeSubsystem.stopIntake();
+            m_intakeSubsystem.stopPivot();
+        })
+    );
+            
     }
         
 
     public void registerNamedCommands() {
         //NamedCommands.registerCommand("Brake", drivetrain.applyRequest(() -> brake));
-        //NamedCommands.registerCommand("Intake", new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef));
-        /*NamedCommands.registerCommand("Extend Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kExtendClimbSpeed));
-        NamedCommands.registerCommand("Retract Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kRetractClimbSpeed));
-        NamedCommands.registerCommand("Auto Aim at Hub", new AutoAimCommand(drivetrain)); */
+        NamedCommands.registerCommand("Intake", new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef));
+        //NamedCommands.registerCommand("Extend Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kExtendClimbSpeed));
+        //NamedCommands.registerCommand("Retract Climb", new ClimbCommand(m_climbSubsystem, ClimbConstants.kRetractClimbSpeed));
+        NamedCommands.registerCommand("Auto Aim at Hub", new AutoAimCommand(drivetrain));
         NamedCommands.registerCommand("Shoot", 
             Commands.parallel(
             new ShooterCommand(m_shooterSubsystem, drivetrain),
@@ -204,7 +203,7 @@ public class RobotContainer {
     
         //NamedCommands.registerCommand("Pivot Feeding", new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
         //NamedCommands.registerCommand("Pivot Home", new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
-        //NamedCommands.registerCommand("Pivot Deployed", new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
+        NamedCommands.registerCommand("Pivot Deployed", new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
         /*NamedCommands.registerCommand("Pivot Oscillate", 
             Commands.parallel( //Heavily Experimental, be ready on E-Stop when testing
                 new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef) 
