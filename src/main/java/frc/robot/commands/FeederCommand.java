@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.RobotConstants.FeederConstants;
 import frc.robot.subsystems.FeederSubsystem;
 
 public class FeederCommand extends Command{

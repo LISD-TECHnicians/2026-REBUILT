@@ -5,6 +5,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 public class ShooterHelper {
     public double m_shooterWheelVelocity;
     public double m_hoodSetValue;
+    public double shooterSetSpeed;
 
     public ShooterHelper(double wheelVelocity, double setValue)
     {

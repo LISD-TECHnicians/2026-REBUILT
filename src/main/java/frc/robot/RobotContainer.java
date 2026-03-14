@@ -30,6 +30,7 @@ import frc.robot.Constants.RobotConstants.ClimbConstants;
 import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.FeederCommand;
+import frc.robot.commands.IndexerCommand;
 import frc.robot.commands.IntakeRunCommand;
 import frc.robot.commands.IntakePositionCommand;
 import frc.robot.commands.RotationalAimCommand;
@@ -154,11 +155,13 @@ public class RobotContainer {
         // Intended to turn the feeder on after the fly-wheels have been on for a second
         driveController.rightTrigger().whileTrue(
     Commands.parallel(
-        new ShooterCommand(m_shooterSubsystem, drivetrain),
-        Commands.sequence(
+            new ShooterCommand(m_shooterSubsystem, drivetrain),
+            Commands.sequence(
             // Wait until the condition is met WITHOUT ending the whole group
-            Commands.waitUntil(m_shooterSubsystem::shooterAtFireSpeed),
-            new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed))));
+            Commands.waitSeconds(1.5),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
+            Commands.parallel(
+                new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed * 0.666),
+                new IndexerCommand(m_shooterSubsystem)))));
 
         driveController.rightBumper().whileTrue(new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef));
         operatorController.b().whileTrue(new IntakeRunCommand(m_intakeSubsystem, IntakeConstants.kIntakeSpeedRunCoef));
@@ -198,8 +201,10 @@ public class RobotContainer {
             new ShooterCommand(m_shooterSubsystem, drivetrain),
             Commands.sequence(
             // Wait until the condition is met WITHOUT ending the whole group
-            Commands.waitUntil(m_shooterSubsystem::shooterAtFireSpeed),
-            new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed))));
+            Commands.waitSeconds(1.0),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
+            Commands.parallel(
+                new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed * 0.666),
+                new IndexerCommand(m_shooterSubsystem)))));
     
         //NamedCommands.registerCommand("Pivot Feeding", new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
         //NamedCommands.registerCommand("Pivot Home", new IntakePositionCommand(m_intakeSubsystem, Position.HOME));

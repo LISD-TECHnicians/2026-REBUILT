@@ -63,9 +63,9 @@ public class Constants {
             // Pivot motor configuration
             public static final double kPivotMotorGearReduction = 1.0; // update based on team's gearbox selection
             
-            public static final double kPivotDeployVelocityCoef = .5;
-            public static final double kPivotDeployAccelerationCoef = .8;
-            public static final double kPivotDeployJerk = 600;
+            public static final double kPivotDeployVelocityCoef = 1;
+            public static final double kPivotDeployAccelerationCoef = 2;
+            public static final double kPivotDeployJerk = 1200;
             //public static final double kPivotDeployVoltage = 0;
             
             public static final double kPivotHomeVelocityCoef = .8;
@@ -82,10 +82,10 @@ public class Constants {
             public static final double kPivotOscillateVelocityCoef = .8;
             public static final double kPivotOscillateAccelerationCoef = 1.0;
             
-            public static final double kPivotSlot0KP = 1.0;
-            public static final double kPivotSlot0KI = 0.0;
-            public static final double kPivotSlot0KD = 0.0;
-            public static final double kPivotSlot0KG = 0.1; // Tune based on weight of final intake design
+            public static final double kPivotSlot0KP = 0.125; // 2.0 Before Testing --> Keep Increasing
+            public static final double kPivotSlot0KI = 0.0; // 0.0 Before Testing --> LEAVE FOR NOW
+            public static final double kPivotSlot0KD = 0.0; // 0.0 Before Testing
+            public static final double kPivotSlot0KG = 0.2; // Tune based on weight of final intake design
 
             public static final NeutralModeValue kPivotNeutralModeValue = 
                 NeutralModeValue.Brake;
@@ -98,7 +98,7 @@ public class Constants {
                 = Units.Degrees.of(5);
 
             public static final Angle kPivotRotationsTolerance 
-                = Units.Rotations.of(.25);
+                = Units.Rotations.of(2);
 
             // Intake motor configuration
             public static final InvertedValue kIntakeInvertedValue 
@@ -115,10 +115,10 @@ public class Constants {
                 CTREConstants.kKrakenX60MaxRPS.times(kIntakeSpeedRunCoef);
             
             public static final AngularVelocity kPivotRunVelocity = 
-                Units.RotationsPerSecond.of(160);
+                Units.RotationsPerSecond.of(320);
         
             public static final AngularAcceleration kPivotRunAcceleration = 
-                Units.RotationsPerSecondPerSecond.of(320);
+                Units.RotationsPerSecondPerSecond.of(640);
         }
 
         public class ShooterConstants {
@@ -211,11 +211,11 @@ public class Constants {
                 Units.RadiansPerSecond));
 
             public static final AngularVelocity kVelocityToleranceRot 
-                = Units.RotationsPerSecond.of(4.75); // 10% of max --> tune and test 
+                = Units.RotationsPerSecond.of(2.0); // 10% of max --> tune and test 
 
             
             // Idle speed
-            public static final double kIdleShooterPercentage = .15; // 15% idle speed to prevent dead starting at ramp up
+            public static final double kIdleShooterPercentage = 0.0; // 15% idle speed to prevent dead starting at ramp up
         }
 
         public class ClimbConstants {

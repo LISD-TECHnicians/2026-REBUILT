@@ -18,6 +18,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.Constants.RobotConstants.CTREConstants;
 import frc.robot.Constants.RobotConstants.IntakeConstants;
@@ -27,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
 // TODO: Test and refine pivot positions
     public enum Position {
         DEPLOYED(-14.65),
-        INDEXING(-8),
+        INDEXING(-8.5),
         HOME(-.35);
 
         private double rotations;
@@ -123,8 +124,8 @@ public class IntakeSubsystem extends SubsystemBase {
                     .withKV(CTREConstants.kBatterySupplyVolts.in(Units.Volts)
                     / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
                     * (IntakeConstants.kPivotMotorGearReduction)))
-                    .withKG(.35)
-                    .withKA(.075)
+                    .withKG(0)
+                    .withKA(.1) // .075
             );
             m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
     }       

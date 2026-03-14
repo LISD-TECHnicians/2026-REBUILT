@@ -34,18 +34,18 @@ public class IntakePositionCommand extends Command {
                 
             case HOME:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                    (2.0); // Was 1.0
+                    (1.0); // Was 1.0
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                    (2.0); // Was 1.0
+                    (1.0); // Was 1.0
                 m_jerk = IntakeConstants.kPivotHomeJerk;
                 break;
                 
             case INDEXING:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                (2.0); // Was 15.0 
+                (1); // Was 15.0 
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                (2.0); // Was 15.0
-                m_jerk = IntakeConstants.kPivotIndexingJerk * 1;  // originally multiplied by 1500
+                (1); // Was 15.0
+                m_jerk = IntakeConstants.kPivotIndexingJerk * 1;  
                 break;
                 
             default:
@@ -76,6 +76,7 @@ public class IntakePositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
+        if ( m_intakeSubsystem.pivotInPosition()) System.out.println("Pivot in Position!");
         return m_intakeSubsystem.pivotInPosition();
         // test and consider backup plan 
     }

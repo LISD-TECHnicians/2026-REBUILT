@@ -11,7 +11,13 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.DifferentialFollower;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -39,7 +45,7 @@ import frc.robot.util.ShooterHelper;
 
 public class ShooterSubsystem extends SubsystemBase{
 
-    private final TalonFX m_centerShooterMotor;
+    //private final TalonFX m_centerShooterMotor;
     private final TalonFX m_leftShooterMotor;
     private final TalonFX m_rightShooterMotor;
     private final TalonFX m_indexerShooterMotor;
@@ -51,6 +57,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private final VoltageOut m_indexerVoltageRequest;
     private final VoltageOut m_shooterVoltageRequest;
     private TalonFXConfiguration m_shooterMotorConfig;
+    private TalonFXConfiguration m_indexerMotorConfig;
     private final MedianFilter m_tagentialVelocityFilter;
     private final MedianFilter m_servoSetFilter;
     private double m_tangentialVelocity;
@@ -59,15 +66,17 @@ public class ShooterSubsystem extends SubsystemBase{
     private double m_currentServoPosition;
     private double m_targetServoPositon;
     private ShooterHelper m_helperValues;
+    private Follower m_follower;
     
 
     public ShooterSubsystem() {
         m_FPGATimeStamp = Units.Seconds.of(0);
-        m_centerShooterMotor = new TalonFX(ShooterConstants.kCenterShooterMotorID, TunerConstants.kCANBus);
+        //m_centerShooterMotor = new TalonFX(ShooterConstants.kCenterShooterMotorID, TunerConstants.kCANBus);
         m_leftShooterMotor = new TalonFX(ShooterConstants.kLeftShooterMotorID, TunerConstants.kCANBus);
         m_rightShooterMotor = new TalonFX(ShooterConstants.kRightShooterMotorID, TunerConstants.kCANBus);
+        m_follower = new Follower(m_leftShooterMotor.getDeviceID(), MotorAlignmentValue.Aligned).withUpdateFreqHz(100);
         m_indexerShooterMotor = new TalonFX(ShooterConstants.kShooterMotorIndexerID, TunerConstants.kCANBus);
-        m_shooterMotors = List.of(m_centerShooterMotor, m_leftShooterMotor, m_rightShooterMotor);
+        m_shooterMotors = List.of(m_leftShooterMotor, m_rightShooterMotor);
         m_velocityRequest = new VelocityVoltage(0);
         m_shooterVoltageRequest = new VoltageOut(0);
         m_indexerVoltageRequest = new VoltageOut(0);
@@ -79,11 +88,42 @@ public class ShooterSubsystem extends SubsystemBase{
         m_targetServoPositon = ShooterConstants.kServoInitPosition;
         m_helperValues = new ShooterHelper(0.0, 0.0);
         
+        
         configureMotors();
+        m_leftShooterMotor.getMotorVoltage().setUpdateFrequency(100);
+        m_leftShooterMotor.getDutyCycle().setUpdateFrequency(100);
+        m_leftShooterMotor.getTorqueCurrent().setUpdateFrequency(100);
     }
 
     public void configureMotors() {
         m_shooterMotorConfig = new TalonFXConfiguration()
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(ShooterConstants.kShooterInvertedValue)
+                    .withNeutralMode(ShooterConstants.kShooterNeutralModeValue)
+                
+            )
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(Units.Amps.of(120))
+                    .withStatorCurrentLimitEnable(false) // testing 
+                    .withSupplyCurrentLimit(Units.Amps.of(120))
+                    .withSupplyCurrentLimitEnable(false)
+            )
+            .withVoltage(
+                new VoltageConfigs()
+                    .withPeakForwardVoltage(Units.Volts.of(11))
+                    .withPeakReverseVoltage(Units.Volts.of(-11))
+            )
+            .withSlot0(
+                new Slot0Configs()
+                .withKP(.5) // .5
+                .withKI(0) // 0
+                .withKD(0) 
+                .withKV(.15) // test this as maxRPS / 12v 1.0 --> 1 // .15
+                .withKA(0.0) // --> //0.0
+            );
+        m_indexerMotorConfig = new TalonFXConfiguration()
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(ShooterConstants.kShooterInvertedValue)
@@ -109,10 +149,10 @@ public class ShooterSubsystem extends SubsystemBase{
                 .withKD(0)
                 .withKV(0.125) // test this as maxRPS / 12v
             );
-            m_centerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
+            //m_centerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
             m_leftShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
-            m_rightShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
-            m_indexerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
+            //m_rightShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
+            m_indexerShooterMotor.getConfigurator().apply(m_indexerMotorConfig);
 
         m_hoodServoLH.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
         m_hoodServoRH.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
@@ -134,14 +174,14 @@ public class ShooterSubsystem extends SubsystemBase{
 
     static {
         /* 
-         * Fill this static reference with example data from successful shots that can be used as a basis for future 
-         * predictions of rads/s and servo set value. 
+         * WIP: Mapping post shooter re-design 
         */
-        m_shooterMap.put(Units.Meters.of(1.61), new ShooterHelper(350, 0.30));
-        m_shooterMap.put(Units.Meters.of(2.82), new ShooterHelper(375, 0.40));
-        m_shooterMap.put(Units.Meters.of(3.47), new ShooterHelper(400, 0.50));
-        m_shooterMap.put(Units.Meters.of(4.54), new ShooterHelper(440, 0.60));
-        m_shooterMap.put(Units.Meters.of(8.22), new ShooterHelper(450, 0.70));
+        m_shooterMap.put(Units.Meters.of(1.9452), new ShooterHelper(275, 0.35));
+        m_shooterMap.put(Units.Meters.of(2.4720), new ShooterHelper(300, 0.425));
+        m_shooterMap.put(Units.Meters.of(2.8610), new ShooterHelper(300, 0.475));
+        m_shooterMap.put(Units.Meters.of(3.4200), new ShooterHelper(310, 0.50));
+        m_shooterMap.put(Units.Meters.of(3.9800), new ShooterHelper(330, 0.525));
+        m_shooterMap.put(Units.Meters.of(4.2270), new ShooterHelper(335, 0.525));
     }
 
     public void energize(double distance) {
@@ -182,98 +222,37 @@ public class ShooterSubsystem extends SubsystemBase{
         m_hoodServoRH.setPosition(setPosition);
     }
 
-    
-    public Distance calculateServoLength(Angle theta)
-    {
-        double thetaRadians = theta.in(Units.Radians); // this should not be needed, test and remove.
-        
-        // TODO: needs to be measured and set for new servos
-
-        double B = ShooterConstants.kLowerActuatorToPivot.in(Units.Meters);
-        double C = ShooterConstants.kUpperActuatorToPivot.in(Units.Meters);
-        double sinTheta = Math.sin(thetaRadians);
-        double cosTheta = Math.cos(thetaRadians);
-        double sqrtTerm = Math.sqrt(Math.pow(C, 2) - Math.pow(B * sinTheta, 2));
-        
-        double length1 = B * cosTheta + sqrtTerm; 
-        double length2 = B * cosTheta - sqrtTerm; // assuming the use of the longer length
-        
-        return Units.Meters.of(length2); 
-    }
-
-    public double calculateServoSet(Distance setDistance) {
-        double travelDistance = setDistance.in(Units.Meters); // this should be redundant
-        double maxTravel = ShooterConstants.kActuatorMaxLength.in(Units.Meters) 
-                         - ShooterConstants.kActuatorMinLength.in(Units.Meters);
-        // 100 mm travel by design.
-
-        double setValue = -1 * (travelDistance / maxTravel) / 10;
-        setValue = m_servoSetFilter.calculate(setValue);
-        //System.out.println("setValue: " +  setValue);
-        return MathUtil.clamp(setValue, 
-            ShooterConstants.kServoMinSet,
-            ShooterConstants.kServoMaxSet);
-    }
-
-    public void rotateHood(double targetDistance) {
-        Angle targetHoodAngle = getCalculatedPitch(targetDistance); 
-        Distance calculatedLength = calculateServoLength(targetHoodAngle); // applies law cosines
-
-        //measure and apply for new linear servos from Hitec
-        Distance targetActuatorLength 
-            = calculatedLength.minus(ShooterConstants.kActuatorOffset); 
-        
-        Distance linearSetPosition 
-            = targetActuatorLength.minus(ShooterConstants.kActuatorMinLength); // get the portion of the distance for travel
-        
-        double servoSetValue = calculateServoSet(linearSetPosition); 
-        
-        setServo(servoSetValue);
-    }
-
-
-    public Angle getCalculatedPitch(double targetDistance) {
-        m_shootingDistance = targetDistance;
-        m_shootingDistance = (m_shootingDistance == 0) ? 0.1 : m_shootingDistance;
-        m_tangentialVelocity = getTangentialVelocity() * ShooterConstants.kEffectiveKineticCoef; // coef is a tune point 
-        m_tangentialVelocity = m_tagentialVelocityFilter.calculate(m_tangentialVelocity);
-        
-        m_discriminant = Math.pow(m_tangentialVelocity, 4) - PhysicsConstants.kGravity 
-            * (PhysicsConstants.kGravity * Math.pow(m_shootingDistance, 2) + 2 *
-            Math.pow(m_tangentialVelocity, 2) * PhysicsConstants.kDeltaHeight);
-
-        if (m_discriminant < 0) {
-            return Units.Radians.of(0.0); // Target unreachable
-        }
-
-        double tanTheta1 = (Math.pow(m_tangentialVelocity, 2) - Math.sqrt(m_discriminant)) 
-            / (PhysicsConstants.kGravity * m_shootingDistance);
-       
-         double tanTheta2 = (Math.pow(m_tangentialVelocity, 2) + Math.sqrt(m_discriminant)) 
-            / (PhysicsConstants.kGravity * m_shootingDistance);
-    
-        return Units.Radians.of(tanTheta1); // assuming return of larger angle of 2 thetas for loft. 
-    }
-
-    public boolean isIndividualMotorAtSpeed(TalonFX motor) {
+    public boolean isIndividualMotorAtSpeed(/*TalonFX motor*/) {
         //System.out.println("rads/s" + (motor.getVelocity().getValueAsDouble() * 2 * Math.PI)); // confirm and set constant 
-        final boolean isVelocityMode = motor.getAppliedControl().equals(m_velocityRequest);
-        final AngularVelocity currentAngularVelocity = motor.getVelocity().getValue();
+        final boolean isVelocityMode = m_leftShooterMotor.getAppliedControl().equals(m_velocityRequest);
+        final AngularVelocity currentAngularVelocity = m_leftShooterMotor.getVelocity().getValue();
         final AngularVelocity targetAngularVelocity = m_velocityRequest.getVelocityMeasure();
-        return isVelocityMode && currentAngularVelocity.isNear(targetAngularVelocity, ShooterConstants.kVelocityToleranceRot); 
+        return isVelocityMode && currentAngularVelocity.isNear(targetAngularVelocity, ShooterConstants.kVelocityToleranceRot.times(0.5)); 
     }
 
-    public boolean shooterAtFireSpeed() {
-        return m_shooterMotors.stream().allMatch(this::isIndividualMotorAtSpeed);
-    }
+    //public boolean shooterAtFireSpeed() {
+    //    return m_shooterMotors.stream().allMatch(this::isIndividualMotorAtSpeed);
+    //}
 
-    public void setShooterRadiansSecond(double setSpeed) { 
-        for (final TalonFX shooterMotor : m_shooterMotors) {
+    public void setShooterRadiansSecond(double setSpeed) {
+        m_velocityRequest.withVelocity(Units.RadiansPerSecond.of(setSpeed));
+        m_leftShooterMotor.setControl(m_velocityRequest);
+        // m_leftShooterMotor.setVoltage(12);//m_velocityRequest);//.setControl(m_velocityRequest);leader needs voltage status signal enabled 
+        m_rightShooterMotor.setControl(m_follower.withUpdateFreqHz(100));
+
+        // m_rightShooterMotor.set(m_leftShooterMotor.getDutyCycle().getValueAsDouble());//m_velocityRequest.withVelocity(Units.RadiansPerSecond.of(setSpeed)));
+
+
+        System.out.println(m_leftShooterMotor.getVelocity().getValueAsDouble() * 2 * Math.PI);
+        // System.out.println("DIFF" + (m_rightShooterMotor.getVelocity().getValueAsDouble() - m_leftShooterMotor.getVelocity().getValueAsDouble()));
+
+        /*{
+            for (TalonFX shooterMotor : m_shooterMotors) {
             shooterMotor.setControl(
                 m_velocityRequest
                     .withVelocity(Units.RadiansPerSecond.of(setSpeed))
             );
-      }
+        }*/
     }
 
 
@@ -292,7 +271,7 @@ public class ShooterSubsystem extends SubsystemBase{
      }
 
     public void stopShooterMotors() {
-        setShooterPercentage(0.0);
+        setShooterPercentage(0);
     }
 
     public void stopIndexerMotor() {
@@ -305,28 +284,21 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public double getTangentialVelocity() {
-        double wheelRPM = m_centerShooterMotor.getVelocity().getValueAsDouble() * 60.0; // Convert rot/s to RPM
+        double wheelRPM = m_leftShooterMotor.getVelocity().getValueAsDouble() * 60.0; // Convert rot/s to RPM
         double radiansPerSecond = (wheelRPM * 2 * Math.PI) / 60.0;
         return radiansPerSecond * ShooterConstants.kRadiusShooterWheel;
     }
 
     @Override
     public void periodic() { 
-        // Update servo position with rate limiting
         updateServoPosition();
-        
-        // Apply the rate-limited position to the physical servos
-        //System.out.println("Target Position: " + m_targetServoPositon);
-        //System.out.println("Target Position: " + m_currentServoPosition);
-        m_hoodServoLH.set(m_targetServoPositon + ShooterConstants.kLeftServoOffset);
-        m_hoodServoRH.set(m_targetServoPositon);
-        //setServo(.6);
-        
-        // Keep shooter at idle speed and hood at init position when not commanded
+        //m_hoodServoLH.set(m_targetServoPositon + ShooterConstants.kLeftServoOffset);
+        //m_hoodServoRH.set(m_targetServoPositon);
+
         if (getCurrentCommand() == null) {
             setShooterPercentage(ShooterConstants.kIdleShooterPercentage); 
             setServo(ShooterConstants.kServoInitPosition);
-        } 
+        }
     }
 }
 

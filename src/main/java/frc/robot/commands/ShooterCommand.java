@@ -34,13 +34,12 @@ public class ShooterCommand extends Command{
        shootingDistance = m_distanceFilter.calculate(shootingDistance);
        System.out.println("distance: "  + shootingDistance);
 
-       double setSpeed = AimHelper.getCalculatedSpeed(shootingDistance).magnitude();
        m_shooterSubsystem.energize(shootingDistance);
        
-       //m_shooterSubsystem.testServo(.70); // 
-       //m_shooterSubsystem.setShooterRadiansSecond(450); // 385 rads/s
+       // m_shooterSubsystem.testServo(.525); 
+       // m_shooterSubsystem.setShooterRadiansSecond(335); 
        
-       m_shooterReadyFire = m_shooterSubsystem.shooterAtFireSpeed();
+       m_shooterReadyFire = m_shooterSubsystem.isIndividualMotorAtSpeed();
        if (m_shooterReadyFire) {m_shooterSubsystem.setIndexerMotorPercentage(1.0);}
        else {m_shooterSubsystem.setIndexerMotorPercentage(0.0);}
     }
