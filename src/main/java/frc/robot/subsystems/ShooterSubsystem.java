@@ -117,11 +117,11 @@ public class ShooterSubsystem extends SubsystemBase{
             )
             .withSlot0(
                 new Slot0Configs()
-                .withKP(.5) // .5
-                .withKI(0) // 0
-                .withKD(0) 
-                .withKV(.15) // test this as maxRPS / 12v 1.0 --> 1 // .15
-                .withKA(0.0) // --> //0.0
+                .withKP(.6) // .5
+                .withKI(.9) // .8
+                .withKD(0.0025) // 0.005 & 0.001 were decent
+                .withKV(.23) // test this as maxRPS / 12v 1.0 --> 1 // .2
+                .withKA(1.5) // --> //10.0, 1.5
             );
         m_indexerMotorConfig = new TalonFXConfiguration()
             .withMotorOutput(
@@ -175,13 +175,20 @@ public class ShooterSubsystem extends SubsystemBase{
     static {
         /* 
          * WIP: Mapping post shooter re-design 
-        */
-        m_shooterMap.put(Units.Meters.of(1.9452), new ShooterHelper(275, 0.35));
+         * 
+         * // m_shooterMap.put(Units.Meters.of(2.3095), new ShooterHelper(295, 0.30)); //Tested by Anthony
         m_shooterMap.put(Units.Meters.of(2.4720), new ShooterHelper(300, 0.425));
         m_shooterMap.put(Units.Meters.of(2.8610), new ShooterHelper(300, 0.475));
         m_shooterMap.put(Units.Meters.of(3.4200), new ShooterHelper(310, 0.50));
         m_shooterMap.put(Units.Meters.of(3.9800), new ShooterHelper(330, 0.525));
         m_shooterMap.put(Units.Meters.of(4.2270), new ShooterHelper(335, 0.525));
+        */
+        m_shooterMap.put(Units.Meters.of(1.79), new ShooterHelper(290, 0.25));
+        m_shooterMap.put(Units.Meters.of(2.62), new ShooterHelper(310, 0.35));
+        m_shooterMap.put(Units.Meters.of(3.08), new ShooterHelper(320, 0.375));
+        m_shooterMap.put(Units.Meters.of(3.45), new ShooterHelper(325, 0.40));
+        m_shooterMap.put(Units.Meters.of(3.95), new ShooterHelper(340, 0.475));
+        m_shooterMap.put(Units.Meters.of(4.48), new ShooterHelper(360, 0.55));
     }
 
     public void energize(double distance) {
@@ -292,8 +299,8 @@ public class ShooterSubsystem extends SubsystemBase{
     @Override
     public void periodic() { 
         updateServoPosition();
-        //m_hoodServoLH.set(m_targetServoPositon + ShooterConstants.kLeftServoOffset);
-        //m_hoodServoRH.set(m_targetServoPositon);
+        m_hoodServoLH.set(m_targetServoPositon + ShooterConstants.kLeftServoOffset);
+        m_hoodServoRH.set(m_targetServoPositon);
 
         if (getCurrentCommand() == null) {
             setShooterPercentage(ShooterConstants.kIdleShooterPercentage); 

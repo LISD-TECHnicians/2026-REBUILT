@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.795,
-        "y": 0.6341888888888878
+        "x": 0.7570333333333332,
+        "y": 0.673166666666666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7950000000000004,
-        "y": 0.6341888888888878
+        "x": 1.7570333333333337,
+        "y": 0.673166666666666
       },
       "isLocked": false,
-      "linkedName": "Outpost Location"
+      "linkedName": "End of Intake"
     },
     {
       "anchor": {

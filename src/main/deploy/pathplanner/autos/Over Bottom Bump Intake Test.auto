@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Shot Path"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "pathName": "Bottom Auto Path 1 (Over Bump)"
           }
         },
         {
@@ -23,25 +17,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
+                  "name": "Pivot Deployed"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 6.0
+                  "waitTime": 1.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bottom Auto Path 2 (Fill)"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Aim at Hub"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Oscillate"
+                  "name": "Intake"
                 }
               }
             ]
@@ -51,6 +52,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Comp Autos",
+  "folder": "Test Autos",
   "choreoAuto": false
 }

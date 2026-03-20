@@ -31,6 +31,12 @@
                 "data": {
                   "waitTime": 6.0
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aim at Hub"
+                }
               }
             ]
           }

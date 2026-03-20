@@ -27,9 +27,11 @@ public class IntakePositionCommand extends Command {
         // dynamic motion magic diff per position.
         switch (m_targetPosition) {
             case DEPLOYED:
-                m_velocity = IntakeConstants.kPivotRunVelocity;
-                m_acceleration = IntakeConstants.kPivotRunAcceleration;
-                m_jerk = IntakeConstants.kPivotDeployJerk;
+                m_velocity = IntakeConstants.kPivotRunVelocity.times
+                    (1); // Was 0.75
+                m_acceleration = IntakeConstants.kPivotRunAcceleration.times
+                    (.5); // Was 0.4
+                m_jerk = IntakeConstants.kPivotDeployJerk * .15;
                 break;
                 
             case HOME:
@@ -42,9 +44,9 @@ public class IntakePositionCommand extends Command {
                 
             case INDEXING:
                 m_velocity = IntakeConstants.kPivotRunVelocity.times
-                (1); // Was 15.0 
+                (6); // Was 15.0 
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
-                (1); // Was 15.0
+                (6); // Was 15.0
                 m_jerk = IntakeConstants.kPivotIndexingJerk * 1;  
                 break;
                 

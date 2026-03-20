@@ -30,7 +30,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -40,22 +40,9 @@
                 }
               },
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    }
-                  ]
+                  "name": "Intake"
                 }
               }
             ]
@@ -81,6 +68,12 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 6.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aim at Hub"
                 }
               }
             ]

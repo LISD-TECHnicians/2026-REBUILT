@@ -58,7 +58,7 @@ public class Constants {
             public static final int kPivotMotorID = 22;
             
             // Inkake Speed coefficient
-            public static final double kIntakeSpeedRunCoef = 1.0; 
+            public static final double kIntakeSpeedRunCoef = 0.75; 
             
             // Pivot motor configuration
             public static final double kPivotMotorGearReduction = 1.0; // update based on team's gearbox selection
@@ -115,10 +115,10 @@ public class Constants {
                 CTREConstants.kKrakenX60MaxRPS.times(kIntakeSpeedRunCoef);
             
             public static final AngularVelocity kPivotRunVelocity = 
-                Units.RotationsPerSecond.of(320);
+                Units.RotationsPerSecond.of(150);
         
             public static final AngularAcceleration kPivotRunAcceleration = 
-                Units.RotationsPerSecondPerSecond.of(640);
+                Units.RotationsPerSecondPerSecond.of(320);
         }
 
         public class ShooterConstants {

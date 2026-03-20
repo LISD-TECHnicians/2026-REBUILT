@@ -36,8 +36,12 @@ public class ShooterCommand extends Command{
 
        m_shooterSubsystem.energize(shootingDistance);
        
-       // m_shooterSubsystem.testServo(.525); 
-       // m_shooterSubsystem.setShooterRadiansSecond(335); 
+       
+          //TESTING
+        //m_shooterSubsystem.testServo(0.475); 
+        //m_shooterSubsystem.setShooterRadiansSecond(340);
+       
+        
        
        m_shooterReadyFire = m_shooterSubsystem.isIndividualMotorAtSpeed();
        if (m_shooterReadyFire) {m_shooterSubsystem.setIndexerMotorPercentage(1.0);}

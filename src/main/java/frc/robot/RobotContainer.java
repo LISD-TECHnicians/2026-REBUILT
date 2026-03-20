@@ -45,6 +45,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.Position;
+import pabeles.concurrency.IntOperatorTask.Max;
 import frc.robot.subsystems.ClimbSubsystem;
 
 
@@ -84,7 +85,7 @@ public class RobotContainer {
 
     public final LimelightSubsystem limelight = new LimelightSubsystem("limelight-front");
     public final LimelightSubsystem limelight2 = new LimelightSubsystem("limelight-rear");
-    private final Trigger updateVisionTrigger = new Trigger(() -> LimelightHelpers.getTV("limelight-front") && LimelightHelpers.getTA("limelight-front") > .1);
+    private final Trigger updateVisionTrigger = new Trigger(() -> LimelightHelpers.getTV("limelight-front") && LimelightHelpers.getTA("limelight-front") > .07);
     private final Trigger updateVisionTrigger2 = new Trigger(() -> LimelightHelpers.getTV("limelight-rear"));
     private final UpdateVisionMeasurementCommand updateVisionOdometry = new UpdateVisionMeasurementCommand(drivetrain, limelight);
     private final UpdateVisionMeasurementCommand updateVisionOdometry2 = new UpdateVisionMeasurementCommand(drivetrain, limelight2);
@@ -106,9 +107,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * slowSpeedCoef) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * slowSpeedCoef) // Drive left with negative X (left)
-                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate * 1.20) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.8) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.8) // Drive left with negative X (left)
+                    .withRotationalRate(-driveController.getRightX() * MaxAngularRate * 1.50) // Drive counterclockwise with negative X (left)
                     .withDeadband(DriverConstants.kDriveControllerDeadband)
                     )
         );
@@ -127,10 +128,10 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
         ));
 
-        driveController.leftBumper().whileTrue(drivetrain.applyRequest(() ->  
-            drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.90)
-            .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.90)
-            .withRotationalRate(-driveController.getRightX())
+        driveController.rightBumper().whileTrue(drivetrain.applyRequest(() ->  
+            drive.withVelocityX(-driveController.getLeftY() * MaxSpeed * 0.2)
+            .withVelocityY(-driveController.getLeftX() * MaxSpeed * 0.2)
+            .withRotationalRate(-driveController.getRightX() * MaxAngularRate * 1.5)
             ));
 
         // Run SysId routines when holding back/start and X/Y.
@@ -158,7 +159,7 @@ public class RobotContainer {
             new ShooterCommand(m_shooterSubsystem, drivetrain),
             Commands.sequence(
             // Wait until the condition is met WITHOUT ending the whole group
-            Commands.waitSeconds(1.5),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
+            Commands.waitSeconds(1.75),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
             Commands.parallel(
                 new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed * 0.666),
                 new IndexerCommand(m_shooterSubsystem)))));

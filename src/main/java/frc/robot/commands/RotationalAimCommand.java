@@ -25,7 +25,7 @@ import frc.robot.generated.TunerConstants;
 public class RotationalAimCommand extends Command {
     private Translation2d hubPosition;
     private Rotation2d desiredRotation;
-    private final Angle m_allowedDeviation = Units.Degrees.of(5);
+    private final Angle m_allowedDeviation = Units.Degrees.of(1); //5 
     private final CommandSwerveDrivetrain m_commandSwerveDrivetrain;
     private final SwerveRequest.FieldCentricFacingAngle m_fieldCentricFacingAngle = 
         new SwerveRequest.FieldCentricFacingAngle()
@@ -69,7 +69,7 @@ public class RotationalAimCommand extends Command {
             m_fieldCentricFacingAngle
                 .withVelocityX(TunerConstants.kSpeedAt12Volts.times(input.forward))
                 .withVelocityY(TunerConstants.kSpeedAt12Volts.times(input.left))
-                .withTargetDirection(desiredRotation.plus(Rotation2d.fromDegrees(-5)))
+                .withTargetDirection(desiredRotation.plus(Rotation2d.fromDegrees(0))) //-5
         );
     }           
 

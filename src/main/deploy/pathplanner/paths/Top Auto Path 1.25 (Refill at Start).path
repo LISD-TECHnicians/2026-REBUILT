@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 0.523,
-        "y": 7.328622222222221
+        "x": 0.45495555555555567,
+        "y": 7.2799000000000005
       },
       "prevControl": {
-        "x": 2.335466666666667,
-        "y": 7.289644444444445
+        "x": 2.2674222222222227,
+        "y": 7.240922222222224
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Depot Location"
     }
   ],
   "rotationTargets": [],

@@ -27,9 +27,9 @@ import frc.robot.generated.TunerConstants;
 public class IntakeSubsystem extends SubsystemBase {
 // TODO: Test and refine pivot positions
     public enum Position {
-        DEPLOYED(-14.65),
-        INDEXING(-8.5),
-        HOME(-.35);
+        DEPLOYED(-14.5), //-14.65 PREV
+        INDEXING(-9.41),
+        HOME(-0.91);
 
         private double rotations;
 
@@ -118,14 +118,14 @@ public class IntakeSubsystem extends SubsystemBase {
             ) 
             .withSlot0(
                 new Slot0Configs()
-                    .withKP(IntakeConstants.kPivotSlot0KP)
+                    .withKP(1.5)//IntakeConstants.kPivotSlot0KP) // 1.5 Originally
                     .withKI(IntakeConstants.kPivotSlot0KI)
                     .withKD(IntakeConstants.kPivotSlot0KD)
-                    .withKV(CTREConstants.kBatterySupplyVolts.in(Units.Volts)
+                    .withKV(0.2/*CTREConstants.kBatterySupplyVolts.in(Units.Volts) // 0.2 Originally
                     / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
-                    * (IntakeConstants.kPivotMotorGearReduction)))
-                    .withKG(0)
-                    .withKA(.1) // .075
+                    * (IntakeConstants.kPivotMotorGearReduction)*/)
+                    .withKG(1) // 1 Originally
+                    .withKA(.1) // .1 Originally
             );
             m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
     }       

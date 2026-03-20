@@ -54,8 +54,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.2,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 392.0,
     "maxAngularAcceleration": 860.0,
     "nominalVoltage": 12.0,
@@ -68,8 +68,8 @@
   "reversed": false,
   "folder": "Top Shooter Collection",
   "idealStartingState": {
-    "velocity": 5.0,
+    "velocity": 0.0,
     "rotation": -135.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
