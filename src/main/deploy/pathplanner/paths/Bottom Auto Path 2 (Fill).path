@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.92158888888889,
-        "y": 2.768222222222222
+        "x": 7.06168888888889,
+        "y": 0.0007999999999994678
       },
       "isLocked": false,
       "linkedName": "Bump Return"
@@ -36,8 +36,8 @@
         "y": 2.768222222222222
       },
       "prevControl": {
-        "x": 6.490889887462355,
-        "y": 3.6998056744333496
+        "x": 6.759611111111111,
+        "y": 3.167744444444444
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,8 +58,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.2,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 392.0,
     "maxAngularAcceleration": 860.0,
     "nominalVoltage": 12.0,
@@ -75,5 +75,5 @@
     "velocity": 0.0,
     "rotation": 45.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

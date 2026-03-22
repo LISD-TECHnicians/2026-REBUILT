@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.391711111111111,
-        "y": 2.4953777777777773
+        "x": 4.401455555555555,
+        "y": 2.709755555555556
       },
       "isLocked": false,
       "linkedName": "Bottom Bump Start"
@@ -20,8 +20,8 @@
         "y": 2.768222222222222
       },
       "prevControl": {
-        "x": 4.723022222222223,
-        "y": 2.953366666666666
+        "x": 5.025100000000001,
+        "y": 2.2907444444444436
       },
       "nextControl": null,
       "isLocked": false,

@@ -17,7 +17,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.5
                 }
               },
               {
@@ -32,7 +32,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -70,7 +70,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.0
+            "waitTime": 0.5
           }
         },
         {
@@ -80,53 +80,9 @@
           }
         },
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Pivot Oscillate"
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Auto Aim at Hub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom Shoot Path (EX)"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.0
+            "waitTime": 0.5
           }
         },
         {
@@ -136,13 +92,25 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "Pivot Oscillate"
                 }
               },
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "Bottom Auto Path 2 (Fill)"
+                  "waitTime": 7.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aim at Hub"
                 }
               }
             ]
@@ -157,7 +125,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Auto Path 3 (Shooting)"
+            "pathName": "Bottom Shoot Path (EX)"
           }
         }
       ]

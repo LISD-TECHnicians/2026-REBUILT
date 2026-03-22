@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 6.584,
-        "y": 1.394
+        "x": 5.922,
+        "y": 2.768222222222222
       },
       "prevControl": {
-        "x": 5.4536444444444445,
-        "y": 3.5670111111111114
+        "x": 4.74292222222222,
+        "y": 2.2517666666666663
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bump Return"
     }
   ],
   "rotationTargets": [
@@ -54,8 +54,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.2,
-    "maxAcceleration": 7.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 392.0,
     "maxAngularAcceleration": 860.0,
     "nominalVoltage": 12.0,
@@ -71,5 +71,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

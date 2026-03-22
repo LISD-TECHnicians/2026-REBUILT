@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.0348444444444445,
-        "y": 3.148255555555555
+        "x": 5.044588888888889,
+        "y": 2.1932999999999994
       },
       "isLocked": false,
       "linkedName": "Bump Return"
@@ -36,8 +36,8 @@
         "y": 3.1098858773181166
       },
       "prevControl": {
-        "x": 3.4699942938659056,
-        "y": 2.7087874465049935
+        "x": 3.4562444444444447,
+        "y": 2.5635888888888894
       },
       "nextControl": null,
       "isLocked": false,
@@ -75,5 +75,5 @@
     "velocity": 4.5,
     "rotation": 45.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

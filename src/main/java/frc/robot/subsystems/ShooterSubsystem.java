@@ -173,16 +173,6 @@ public class ShooterSubsystem extends SubsystemBase{
         );
 
     static {
-        /* 
-         * WIP: Mapping post shooter re-design 
-         * 
-         * // m_shooterMap.put(Units.Meters.of(2.3095), new ShooterHelper(295, 0.30)); //Tested by Anthony
-        m_shooterMap.put(Units.Meters.of(2.4720), new ShooterHelper(300, 0.425));
-        m_shooterMap.put(Units.Meters.of(2.8610), new ShooterHelper(300, 0.475));
-        m_shooterMap.put(Units.Meters.of(3.4200), new ShooterHelper(310, 0.50));
-        m_shooterMap.put(Units.Meters.of(3.9800), new ShooterHelper(330, 0.525));
-        m_shooterMap.put(Units.Meters.of(4.2270), new ShooterHelper(335, 0.525));
-        */
         m_shooterMap.put(Units.Meters.of(1.79), new ShooterHelper(290, 0.25));
         m_shooterMap.put(Units.Meters.of(2.62), new ShooterHelper(310, 0.35));
         m_shooterMap.put(Units.Meters.of(3.08), new ShooterHelper(320, 0.375));

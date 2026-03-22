@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path 1 (Over Bump 1)"
+            "pathName": "Top Auto Path 1.25 (Centered Refill at Start)"
           }
         },
         {
@@ -30,40 +30,41 @@
           }
         },
         {
-          "type": "race",
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Top Auto Path 2 (Refilling)"
+                  "pathName": "Top Auto Path 1.50 (Score at Start)"
                 }
               },
               {
-                "type": "named",
+                "type": "race",
                 "data": {
-                  "name": "Intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 4.0
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Auto Path 3 (Over Bump 2 & Score)"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {
@@ -77,15 +78,15 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "Auto Aim at Hub"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 6.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aim at Hub"
                 }
               },
               {
@@ -106,7 +107,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path 4 (Refill)"
+            "pathName": "Top Auto Path 1.75 (Over Bump 1 ALT)"
           }
         }
       ]

@@ -81,7 +81,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(DriverConstants.kOperaterControllerPort);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    ;
+    
 
     public final LimelightSubsystem limelight = new LimelightSubsystem("limelight-front");
     public final LimelightSubsystem limelight2 = new LimelightSubsystem("limelight-rear");
@@ -202,7 +202,7 @@ public class RobotContainer {
             new ShooterCommand(m_shooterSubsystem, drivetrain),
             Commands.sequence(
             // Wait until the condition is met WITHOUT ending the whole group
-            Commands.waitSeconds(1.0),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
+            Commands.waitSeconds(1.75),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
             Commands.parallel(
                 new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed * 0.666),
                 new IndexerCommand(m_shooterSubsystem)))));
@@ -210,7 +210,7 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Pivot Feeding", new IntakePositionCommand(m_intakeSubsystem, Position.INDEXING));
         //NamedCommands.registerCommand("Pivot Home", new IntakePositionCommand(m_intakeSubsystem, Position.HOME));
         NamedCommands.registerCommand("Pivot Deployed", new IntakePositionCommand(m_intakeSubsystem, Position.DEPLOYED));
-        /*NamedCommands.registerCommand("Pivot Oscillate", 
+        NamedCommands.registerCommand("Pivot Oscillate", 
             Commands.parallel( //Heavily Experimental, be ready on E-Stop when testing
                 new IntakeRunCommand(m_intakeSubsystem, -IntakeConstants.kIntakeSpeedRunCoef) 
                 .beforeStarting(  // verify the correction for intake motor running.
@@ -227,7 +227,7 @@ public class RobotContainer {
                     m_intakeSubsystem.stopPivot();
                 })
             ));
-    }*/}
+    }
 
             public Command getAutonomousCommand() {
                 try{

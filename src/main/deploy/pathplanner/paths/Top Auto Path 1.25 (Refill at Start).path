@@ -8,27 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0591111111111111,
-        "y": 7.3676
+        "x": 1.0883444444444441,
+        "y": 7.123988888888889
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.45495555555555567,
-        "y": 7.2799000000000005
+        "x": 0.3575111111111111,
+        "y": 7.318877777777777
       },
       "prevControl": {
-        "x": 2.2674222222222227,
-        "y": 7.240922222222224
+        "x": 2.1602333333333332,
+        "y": 7.416322222222221
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Depot Location"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

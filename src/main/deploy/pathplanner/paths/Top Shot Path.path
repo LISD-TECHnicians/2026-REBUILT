@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.001933333333334,
-        "y": 7.620955555555556
+        "x": 3.553688888888889,
+        "y": 7.630699999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6474555555555552,
-        "y": 7.387088888888888
+        "x": 2.1992111111111106,
+        "y": 7.396833333333332
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Starting Point"
     },
     {
       "anchor": {
