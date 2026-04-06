@@ -106,9 +106,9 @@ public class ShooterSubsystem extends SubsystemBase{
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Units.Amps.of(120))
-                    .withStatorCurrentLimitEnable(false) // testing 
-                    .withSupplyCurrentLimit(Units.Amps.of(120))
-                    .withSupplyCurrentLimitEnable(false)
+                    .withStatorCurrentLimitEnable(true) // testing 
+                    .withSupplyCurrentLimit(Units.Amps.of(45))
+                    .withSupplyCurrentLimitEnable(true)
             )
             .withVoltage(
                 new VoltageConfigs()
@@ -133,9 +133,9 @@ public class ShooterSubsystem extends SubsystemBase{
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Units.Amps.of(120))
-                    .withStatorCurrentLimitEnable(false) // testing 
-                    .withSupplyCurrentLimit(Units.Amps.of(120))
-                    .withSupplyCurrentLimitEnable(false)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimit(Units.Amps.of(50))
+                    .withSupplyCurrentLimitEnable(true)
             )
             .withVoltage(
                 new VoltageConfigs()
@@ -289,7 +289,7 @@ public class ShooterSubsystem extends SubsystemBase{
     @Override
     public void periodic() { 
         updateServoPosition();
-        m_hoodServoLH.set(m_targetServoPositon + ShooterConstants.kLeftServoOffset);
+        m_hoodServoLH.set(m_targetServoPositon);
         m_hoodServoRH.set(m_targetServoPositon);
 
         if (getCurrentCommand() == null) {

@@ -27,9 +27,15 @@ import frc.robot.generated.TunerConstants;
 public class IntakeSubsystem extends SubsystemBase {
 // TODO: Test and refine pivot positions
     public enum Position {
-        DEPLOYED(-14.5), //-14.65 PREV
-        INDEXING(-9.41),
-        HOME(-0.91);
+        // 15 Tooth Sprocket
+        // DEPLOYED(-14.5), //-14.65 PREV
+        // INDEXING(-9.41),
+        // HOME(-0.91);
+
+        // 14 Tooth Sprocket
+        DEPLOYED(-16.059),
+        INDEXING(-9.332),
+        HOME(-0.407);
 
         private double rotations;
 
@@ -83,9 +89,9 @@ public class IntakeSubsystem extends SubsystemBase {
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Units.Amps.of(120))
-                    .withStatorCurrentLimitEnable(false)
+                    .withStatorCurrentLimitEnable(true)
                     .withSupplyCurrentLimit(Units.Amps.of(70))
-                    .withSupplyCurrentLimitEnable(false)
+                    .withSupplyCurrentLimitEnable(true)
             );
             m_intakeMotor.getConfigurator().apply(intakeMotorConfig);
     }
