@@ -120,18 +120,18 @@ public class IntakeSubsystem extends SubsystemBase {
             .withFeedback(
                 new FeedbackConfigs()
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor)
-                    .withSensorToMechanismRatio(IntakeConstants.kPivotMotorGearReduction)
+                    //.withSensorToMechanismRatio(IntakeConstants.kPivotMotorGearReduction)
             ) 
             .withSlot0(
                 new Slot0Configs()
-                    .withKP(1.5)//IntakeConstants.kPivotSlot0KP) // 1.5 Originally
+                    .withKP(2)//IntakeConstants.kPivotSlot0KP) // 1.5 Originally
                     .withKI(IntakeConstants.kPivotSlot0KI)
                     .withKD(IntakeConstants.kPivotSlot0KD)
-                    .withKV(0.2/*CTREConstants.kBatterySupplyVolts.in(Units.Volts) // 0.2 Originally
+                    .withKV(0.0/*CTREConstants.kBatterySupplyVolts.in(Units.Volts) // 0.2 Originally
                     / (CTREConstants.kKrakenX60MaxRPS.in(Units.RotationsPerSecond)
                     * (IntakeConstants.kPivotMotorGearReduction)*/)
-                    .withKG(1) // 1 Originally
-                    .withKA(.1) // .1 Originally
+                    .withKG(0) // 1 Originally
+                    .withKA(0) // .1 Originally
             );
             m_pivotMotor.getConfigurator().apply(pivotMotorConfig);
     }       

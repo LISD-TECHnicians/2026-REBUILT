@@ -35,6 +35,7 @@ import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants.PhysicsConstants;
 import frc.robot.Constants.RobotConstants.CTREConstants;
@@ -134,7 +135,7 @@ public class ShooterSubsystem extends SubsystemBase{
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(Units.Amps.of(120))
                     .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimit(Units.Amps.of(50))
+                    .withSupplyCurrentLimit(Units.Amps.of(60))
                     .withSupplyCurrentLimitEnable(true)
             )
             .withVoltage(
@@ -144,10 +145,12 @@ public class ShooterSubsystem extends SubsystemBase{
             )
             .withSlot0(
                 new Slot0Configs()
-                .withKP(0.5)
+                .withKP(.2) //Change log: 0.125, 0.175, 1.25, 3, .2
                 .withKI(2)
                 .withKD(0)
-                .withKV(0.125) // test this as maxRPS / 12v
+                .withKV(1) // test this as maxRPS / 12v //Change log: 0.25, 1, 1.5, 3, 1
+                .withKA(5) //0, 5, 7, 5
+                .withKS(0)
             );
             //m_centerShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
             m_leftShooterMotor.getConfigurator().apply(m_shooterMotorConfig);
@@ -173,12 +176,25 @@ public class ShooterSubsystem extends SubsystemBase{
         );
 
     static {
+        //m_shooterMap.put(Units.Meters.of(), new ShooterHelper());
+        m_shooterMap.put(Units.Meters.of(1.32), new ShooterHelper(250, 0.2));
+        m_shooterMap.put(Units.Meters.of(1.79), new ShooterHelper(290, 0.25));
+        m_shooterMap.put(Units.Meters.of(2.28), new ShooterHelper(305, 0.3));
+        m_shooterMap.put(Units.Meters.of(2.93), new ShooterHelper(325, 0.375));
+        m_shooterMap.put(Units.Meters.of(3.55), new ShooterHelper(340, 0.425));
+        m_shooterMap.put(Units.Meters.of(4.02), new ShooterHelper(350, 0.475));
+        
+
+        // With Fins
+        /* m_shooterMap.put(Units.Meters.of(1.31), new ShooterHelper(260, 0.25));
         m_shooterMap.put(Units.Meters.of(1.79), new ShooterHelper(290, 0.25));
         m_shooterMap.put(Units.Meters.of(2.62), new ShooterHelper(310, 0.35));
         m_shooterMap.put(Units.Meters.of(3.08), new ShooterHelper(320, 0.375));
         m_shooterMap.put(Units.Meters.of(3.45), new ShooterHelper(325, 0.40));
         m_shooterMap.put(Units.Meters.of(3.95), new ShooterHelper(340, 0.475));
         m_shooterMap.put(Units.Meters.of(4.48), new ShooterHelper(360, 0.55));
+
+        m_shooterMap.put(Units.Meters.of(4.87), new ShooterHelper(365, 0.65));*/
     }
 
     public void energize(double distance) {
@@ -293,7 +309,7 @@ public class ShooterSubsystem extends SubsystemBase{
         m_hoodServoRH.set(m_targetServoPositon);
 
         if (getCurrentCommand() == null) {
-            setShooterPercentage(ShooterConstants.kIdleShooterPercentage); 
+            setShooterPercentage(0.15);//ShooterConstants.kIdleShooterPercentage); 
             setServo(ShooterConstants.kServoInitPosition);
         }
     }

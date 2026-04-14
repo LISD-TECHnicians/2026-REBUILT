@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Auto Path 1.25 (Refill at Start)"
+            "pathName": "Bottom Start at Bump"
           }
         },
         {
@@ -23,42 +23,41 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.5
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center Top Auto Path 1.50 (Score at Start)"
+                  "pathName": "Bottom Auto Path 2 (Fill)"
                 }
               },
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    }
-                  ]
+                  "name": "Intake"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Auto Path 3 (Shooting)"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -72,6 +71,12 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "Auto Aim at Hub"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
                   "waitTime": 6.0
@@ -82,20 +87,20 @@
                 "data": {
                   "name": "Pivot Oscillate"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Aim at Hub"
-                }
               }
             ]
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Center Path Shoot (EX Right)"
+            "pathName": "Bottom Auto Path 4 (Refilling)"
           }
         }
       ]

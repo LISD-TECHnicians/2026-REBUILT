@@ -26,7 +26,7 @@ public class FeederSubsystem extends SubsystemBase{
         .withCurrentLimits(new CurrentLimitsConfigs()
         .withStatorCurrentLimit(Units.Amps.of(120))
         .withStatorCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(Units.Amps.of(20))
+        .withSupplyCurrentLimit(Units.Amps.of(30))
         .withSupplyCurrentLimitEnable(true));
     
     public FeederSubsystem() {

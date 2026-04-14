@@ -21,7 +21,7 @@ public class RunIndexerCommand extends Command{
     @Override
     public void execute() {
         m_shooterSubsystem.setIndexerMotorPercentage(setSpeed);
-        m_shooterSubsystem.setShooterPercentage(setSpeed);
+        // m_shooterSubsystem.setShooterPercentage(setSpeed);
     }
 
     @Override

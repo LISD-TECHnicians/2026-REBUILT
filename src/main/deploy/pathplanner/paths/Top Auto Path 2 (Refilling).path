@@ -12,20 +12,20 @@
         "y": 8.731822222222222
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Bump Stop"
     },
     {
       "anchor": {
-        "x": 7.665844444444444,
-        "y": 4.5319666666666665
+        "x": 8.231022222219536,
+        "y": 3.9765333333332746
       },
       "prevControl": {
-        "x": 8.538196438594053,
-        "y": 5.03629516328441
+        "x": 9.103374216369145,
+        "y": 4.480861829951018
       },
       "nextControl": {
-        "x": 7.042199999999999,
-        "y": 4.171422222222222
+        "x": 7.607377777775092,
+        "y": 3.61598888888883
       },
       "isLocked": false,
       "linkedName": null
@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.20316344463972125,
-      "rotationDegrees": -90.0
+      "rotationDegrees": -109.67461939700651
     },
     {
       "waypointRelativePos": 1.8115992970123047,
-      "rotationDegrees": -90.0
+      "rotationDegrees": -90.8873672195731
     }
   ],
   "constraintZones": [],

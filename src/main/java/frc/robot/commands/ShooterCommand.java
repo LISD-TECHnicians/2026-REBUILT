@@ -38,14 +38,14 @@ public class ShooterCommand extends Command{
        
        
           //TESTING
-        //m_shooterSubsystem.testServo(0.475); 
-        //m_shooterSubsystem.setShooterRadiansSecond(340);
+        //m_shooterSubsystem.testServo(0.4875); // 0.475
+        //m_shooterSubsystem.setShooterRadiansSecond(360); //340
        
         
        
-       m_shooterReadyFire = m_shooterSubsystem.isIndividualMotorAtSpeed();
+       /*m_shooterReadyFire = m_shooterSubsystem.isIndividualMotorAtSpeed();
        if (m_shooterReadyFire) {m_shooterSubsystem.setIndexerMotorPercentage(1.0);}
-       else {m_shooterSubsystem.setIndexerMotorPercentage(0.0);}
+       else {m_shooterSubsystem.setIndexerMotorPercentage(0.0);}*/
     }
 
     @Override

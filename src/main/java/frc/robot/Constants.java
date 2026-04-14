@@ -115,10 +115,10 @@ public class Constants {
                 CTREConstants.kKrakenX60MaxRPS.times(kIntakeSpeedRunCoef);
             
             public static final AngularVelocity kPivotRunVelocity = 
-                Units.RotationsPerSecond.of(150);
+                Units.RotationsPerSecond.of(500);
         
             public static final AngularAcceleration kPivotRunAcceleration = 
-                Units.RotationsPerSecondPerSecond.of(320);
+                Units.RotationsPerSecondPerSecond.of(700);
         }
 
         public class ShooterConstants {

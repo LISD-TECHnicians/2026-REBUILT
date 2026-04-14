@@ -50,8 +50,8 @@ To maintain a clean working repository, all contributing developers **must** adh
 | **B Button** |Reverse Feeder, Shooter, & Indexer|
 | **X Button** |Oscillate Pivot|
 | **Y Button** |Run Feeder Independently|
-| **Left Bumper (LB)** |Boost|
-| **Right Bumper (RB)** |Run Intake|
+| **Left Bumper (LB)** ||
+| **Right Bumper (RB)** |Run Intake/Slow Speed|
 | **Left Trigger (LT)** |Auto Aim at Hub|
 | **Right Trigger (RT)** |Shoot|
 | **Back Button** |Reset Odometry|
@@ -81,7 +81,7 @@ To maintain a clean working repository, all contributing developers **must** adh
 | **Right Stick Click (R3)**| |
 | **Left Stick (X/Y)** | |
 | **Right Stick (X/Y)** | |
-| **D-Pad (Up/Down)** |Extend Climb/Retract Climb|
+| **D-Pad (Up/Down)** ||
 | **D-Pad (Left/Right)**| |
 
 ## Setup & Installation for Windows Machines

@@ -31,7 +31,7 @@ public class IntakePositionCommand extends Command {
                     (1); // Was 0.75
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
                     (.5); // Was 0.4
-                m_jerk = IntakeConstants.kPivotDeployJerk * .15;
+                m_jerk = IntakeConstants.kPivotDeployJerk * 5;
                 break;
                 
             case HOME:
@@ -47,7 +47,7 @@ public class IntakePositionCommand extends Command {
                 (6); // Was 15.0 
                 m_acceleration = IntakeConstants.kPivotRunAcceleration.times
                 (6); // Was 15.0
-                m_jerk = IntakeConstants.kPivotIndexingJerk * 1;  
+                m_jerk = IntakeConstants.kPivotIndexingJerk * 100;  
                 break;
                 
             default:

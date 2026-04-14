@@ -159,7 +159,7 @@ public class RobotContainer {
             new ShooterCommand(m_shooterSubsystem, drivetrain),
             Commands.sequence(
             // Wait until the condition is met WITHOUT ending the whole group
-            Commands.waitSeconds(1.75),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
+            Commands.waitSeconds(1.0),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed), // Shooter Delay is meant to be 1 second
             Commands.parallel(
                 new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed * 0.666),
                 new IndexerCommand(m_shooterSubsystem)))));
@@ -202,7 +202,7 @@ public class RobotContainer {
             new ShooterCommand(m_shooterSubsystem, drivetrain),
             Commands.sequence(
             // Wait until the condition is met WITHOUT ending the whole group
-            Commands.waitSeconds(1.75),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
+            Commands.waitSeconds(1.0),//Until(m_shooterSubsystem::isIndividualMotorAtSpeed),
             Commands.parallel(
                 new FeederCommand(m_feederSubsystem, FeederConstants.kFeederMotorSpeed * 0.666),
                 new IndexerCommand(m_shooterSubsystem)))));

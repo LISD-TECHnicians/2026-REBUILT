@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.4465000000000003,
+        "y": 5.545388888888888
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.446500000000004,
+        "y": 5.545388888888888
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.263,
+        "y": 5.877
+      },
+      "prevControl": {
+        "x": 5.103055555555556,
+        "y": 5.564877777777777
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Top Bump Stop"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 392.0,
+    "maxAngularAcceleration": 860.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -45.0
+  },
+  "reversed": false,
+  "folder": "Top Shooter Collection",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -45.0
+  },
+  "useDefaultConstraints": false
+}
